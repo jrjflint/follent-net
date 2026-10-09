@@ -59,6 +59,12 @@ On Windows the installed `.qa/tools/node_modules/.bin/html-validate.cmd` launche
 
 ## Launch prerequisites and limitations
 
+### Formspark plan re-audit — 9 October 2026
+
+Rechecked the implementation against the supplied plan and current official Formspark attribution/spam guidance. Six Node tests, the production build, all three package link checks, and HTML validation of both the disabled reference site and enabled form fixture passed again. The ten mocked attribution scenarios and four enabled-form responsive/accessibility checks also passed again, with zero axe, script or CSP errors. Full-site browser QA passed 40 responsive page checks and eight behaviour scenarios, including keyboard access and native success/error fallback. A punctuation typo in the form's attribution notice was corrected; prices and configuration were preserved.
+
+The fresh enabled-fixture Contact Lighthouse audit scored 100 in all four categories, with mobile LCP 1.7 seconds. The real Formtrack CDN entry returned 302 and its versioned script returned 200, with no console errors. This was a local lab audit without submission, not live Formspark delivery evidence. Privacy approval remains false, contact/retention fields remain empty, and live submissions remain disabled. The five existing launch-readiness failures remain outstanding. Activation, one clearly labelled live test, dashboard field/attribution confirmation and notification delivery verification are still required before declaring the live connection complete.
+
 ### Formspark/Formtrack integration update
 
 The supplied Formspark endpoint is now configured centrally, with `form.formtrackEnabled: true`. Privacy approval/contact/retention values remain incomplete, so **real submissions and Formtrack loading are still disabled** in the supplied preview. No real enquiry was sent and no provider storage or notification delivery is asserted.
