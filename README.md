@@ -13,9 +13,9 @@ npm run preview
 
 Open http://127.0.0.1:4173. Stop the server with Ctrl+C. Run `npm test` for package-boundary and form-transport checks, `npm run check` for generated link/metadata checks, and `npm run check:launch` for business setup prerequisites.
 
-**Current state:** a working preview, not a launched business website. The supplied Formspark endpoint is configured. The owner has supplied the legal name, ABN and privacy email; general contact details, approved privacy/retention details, optional Google IDs and migration review are outstanding. The contact form is visibly disabled until privacy setup is complete. No live enquiry or notification delivery has been verified. DNS and the existing website have not been changed.
+**Current state:** a working replacement site, not an authorised production cutover. The owner approved form activation and supplied ordinary-enquiry/email retention wording on 9 October 2026. Normal Growth builds now enable the configured Formspark form; preview builds still disable submissions and tracking. The optional GA4 ID is configured. General contact details, Search Console setup and migration/business launch reviews remain outstanding. [Isolated synthetic form testing](docs/form-e2e/REPORT.md) verified enhanced/native transport and storage; the owner confirmed matching notifications at james@follent.net. This does not verify active collection from the deployed origin or approve launch. DNS and the existing website have not been changed.
 
-The privacy page uses `/privacy-policy/`, matching the existing live URL, in every package build. The [unpublished privacy rewrite and OAIC review](docs/privacy-policy/REVIEW.md) includes a separate local preview at that address. The rewrite is excluded from normal builds pending confirmation of material business practices; do not publish the review output. Normal builds retain the current brief draft notice at the corrected address.
+The privacy page uses `/privacy-policy/` in every package build. Its numbered policy is implemented in `src/pages/privacy-policy.mjs`; [review notes](docs/privacy-policy/REVIEW.md) record evidence and outstanding owner checks. The local review build uses the same renderer with preview safeguards. This change has not been deployed.
 
 ## Source structure
 
@@ -58,7 +58,7 @@ All commercial values are AUD, ex GST. Essential support defaults to **14 days**
 
 1. Create a form in Formspark and configure notification recipients, submission storage and spam filtering in its dashboard.
 2. Set `form.endpoint` to `https://submit-form.com/YOUR_FORM_ID`. A public form ID is not an API token. Keep all provider API tokens and spam verification secrets outside the repository.
-3. Review the privacy notice in `src/pages/content.mjs`; supply retention wording and a privacy contact address. Set `privacy.approved` only after review.
+3. Review the privacy notice in `src/pages/privacy-policy.mjs`; supply retention wording and a privacy contact address. Set `privacy.approved` only after review.
 4. The form is enabled only for Growth, with a real endpoint and those privacy details. Preview builds disable submission even if production credentials are configured.
 5. Formspark's native HTML submission uses `_redirect` for `/success/`, `_error` for `/form-error/`, and `_append=false` to keep personal information out of redirect URLs. JavaScript adds validation, pending state, timeout, duplicate-click protection and recoverable errors. It redirects only after a successful HTTP response.
 6. Keep the provider's automatic spam filtering enabled. `_gotcha` provides an additional honeypot. For stronger protection, configure Cloudflare Turnstile in Formspark, store its **secret only in the provider dashboard**, and place its public site key in `form.turnstileSiteKey`. The generated CSP then permits the verification script and frame. Turnstile requires JavaScript; native forms without it still post normally when this optional challenge is not enabled.
@@ -101,7 +101,7 @@ Formspark reference: [documentation](https://documentation.formspark.io/), [UTM/
 
 ## Google and privacy
 
-Follent's GA4 measurement ID is `G-K54S78JQ7L`, configured through `analytics.measurementId`. The existing external module creates the Google tag after consent; do not paste a second inline tag into page templates. Explicit preview builds keep Analytics disabled, including at dev.follent.net when built with `--preview`. Receipt in GA4 must be verified after deployment and opt-in; local mocked tests do not prove live collection. Reconcile the unpublished privacy-policy rewrite's Analytics statements before publishing it.
+Follent's GA4 measurement ID is `G-K54S78JQ7L`, configured through `analytics.measurementId`. The existing external module creates the Google tag after consent; do not paste a second inline tag into page templates. Explicit preview builds keep Analytics disabled, including at dev.follent.net when built with `--preview`. Receipt in GA4 must be verified after deployment and opt-in; local mocked tests do not prove live collection. Review the policy against deployed settings before publishing.
 
 Set `analytics.measurementId` to a real GA4 `G-...` ID and `analytics.searchConsoleVerification` to the verification token if using HTML verification. DNS verification is an alternative for Search Console; do that manually. Add the sitemap after verification. Add the approved Google Business Profile URL to the shared config.
 

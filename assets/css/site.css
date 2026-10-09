@@ -212,3 +212,12 @@ form .button{margin-top:26px}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}}
 /* Keep longer wordmarks beside the menu on narrow phones. */
 @media(max-width:360px){.site-header .wordmark{font-size:1.65rem}}
+@media print {
+  .site-header, .site-footer, .analytics-notice, [data-analytics-settings] { display: none !important; }
+  body { background: #fff; color: #000; }
+  .section { padding: 1rem 0; }
+  .prose { max-width: none; }
+  .prose p, .prose li { color: #000; }
+  .prose h2 { break-after: avoid; }
+  .prose p { orphans: 3; widows: 3; }
+}

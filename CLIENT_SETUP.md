@@ -61,3 +61,5 @@ npm run preview
 ```
 
 Review real phones and desktop browsers, keyboard navigation, form delivery, spelling, GST amounts and every CTA. Run Lighthouse and accessibility checks on the final configured site; changing fonts, photos or scripts can change results. Use [LAUNCH_CHECKLIST.md](LAUNCH_CHECKLIST.md), deploy a separate Cloudflare Pages project, connect the approved domain manually and monitor enquiries and search indexing after launch.
+
+Privacy copy is business-specific in `src/pages/privacy-policy.mjs`. Replace Follent’s operator, email/CRM arrangements, retention and provider disclosures when cloning; configuration alone does not rewrite these facts.

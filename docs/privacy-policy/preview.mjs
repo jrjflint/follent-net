@@ -1,12 +1,13 @@
-// Local review only. The normal build never imports this draft.
+// Local review output uses the same policy renderer as the normal build.
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { build, headers } from '../../scripts/build.mjs';
+import { privacyPolicy } from '../../src/pages/privacy-policy.mjs';
 import { document } from '../../src/layouts/document.mjs';
 
 const { out, ctx } = await build({ output: '.qa/privacy-review', preview: true });
-const policy = await readFile(new URL('./policy.html', import.meta.url), 'utf8');
+const policy = privacyPolicy(ctx);
 const page = {
   slug: 'privacy-policy', nav: 'Privacy', title: 'Privacy Policy — unpublished review',
   description: 'How Follent.net handles personal information, privacy requests and complaints.',

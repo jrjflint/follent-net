@@ -34,3 +34,5 @@ Customise this static website reference template for the client below. Inspect t
 8. Run the appropriate tests, link/metadata checks, browser layout checks, form success/failure tests and Lighthouse/accessibility review. Report observed results and remaining blockers honestly.
 
 Deliver the customised source, generated preview, changed configuration summary, test evidence and outstanding human decisions. The client must approve factual copy, design, privacy and migration before launch.
+
+Privacy copy is business-specific in `src/pages/privacy-policy.mjs`. Replace Follent’s operator, email/CRM arrangements, retention and provider disclosures when cloning; configuration alone does not rewrite these facts.

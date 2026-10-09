@@ -35,11 +35,12 @@ async function socialImage() {
 try {
   await socialImage();
   if (!process.argv.includes('--social-only')) {
-    await build();
+    const mainBuild = await build();
     const base = await server('dist', 4175);
     const urls = ['/', '/services/', '/pricing/', '/how-it-works/', '/about/', '/contact/', '/privacy-policy/', '/success/', '/form-error/', '/404.html'];
     for (const width of [320, 390, 768, 1440]) {
       const ctx = await browser.newContext({ viewport: { width, height: 1000 }, reducedMotion: 'reduce' });
+      await ctx.route('https://submit-form.com/**', route => route.abort());
       const page = await ctx.newPage();
       page.on('pageerror', err => results.errors.push(err.message));
       for (const url of urls) {
@@ -74,9 +75,13 @@ try {
     assert.equal(await native.locator('#main-nav').isVisible(), true);
     assert.match(await native.locator('h1').textContent(), /Professional websites/);
     await native.goto(base + '/contact/');
+    assert.equal(await native.getByRole('button', { name: 'Send your enquiry' }).isDisabled(), !mainBuild.ctx.formEnabled);
+    await build({ output: '.qa/browser-preview', preview: true });
+    const previewBase = await server('.qa/browser-preview', 4178);
+    await native.goto(previewBase + '/contact/');
     assert.equal(await native.getByRole('button', { name: 'Send your enquiry' }).isDisabled(), true);
     await noJS.close();
-    results.behaviours.push('Without JavaScript: content/navigation visible; unconfigured form disabled.');
+    results.behaviours.push(`Without JavaScript: content/navigation visible; normal form ${mainBuild.ctx.formEnabled ? 'enabled' : 'disabled'} as configured; preview form disabled.`);
 
     // Fixture is local only. No request is ever sent to a real form service.
     const fixture = await loadConfig();

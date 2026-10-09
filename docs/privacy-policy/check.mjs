@@ -42,7 +42,7 @@ try {
     assert.match(response.headers()['x-robots-tag'], /noindex/);
     await page.evaluate(() => document.fonts.ready);
     assert.equal(await page.locator('h1').count(), 1);
-    assert.equal(await page.locator('article').getByText('Follent.net is operated by James Follent. In this Privacy Policy, ‘we’, ‘us’ and ‘our’ refer to James Follent.', { exact: true }).count(), 1);
+    assert.equal(await page.locator('article').getByText('Follent.net is operated by James Follent as a sole trader. In this Privacy Policy, ‘we’, ‘us’ and ‘our’ refer to James Follent.', { exact: true }).count(), 1);
     assert.equal(await page.locator('article h2[id^="policy-"]').count(), 9);
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
     const clauses = await page.locator('article p > strong').allTextContents();
@@ -64,6 +64,14 @@ try {
       assert.equal(await page.locator(':focus').getAttribute('id'), 'main');
       await page.getByRole('link', { name: 'Privacy enquiries and complaints', exact: true }).click();
       assert.match(page.url(), /#policy-8$/);
+    }
+    if (width === 1440) {
+      await page.emulateMedia({ media: 'print' });
+      assert.equal(await page.locator('#policy-9').isVisible(), true);
+      await page.screenshot({ path: path.join(root, '.qa/screenshots/privacy-policy-print.png'), fullPage: true });
+      await page.pdf({ path: path.join(root, '.qa/privacy-policy-print.pdf'), format: 'A4', printBackground: true });
+      await page.emulateMedia({ media: 'screen' });
+      results.checks.push('Print media retains all policy sections; A4 PDF generated for review.');
     }
     await page.goto('http://127.0.0.1:4182/');
     await page.getByRole('navigation', { name: 'Footer navigation' }).getByRole('link', { name: 'Privacy', exact: true }).click();

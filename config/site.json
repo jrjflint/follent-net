@@ -20,7 +20,7 @@
   "form": { "provider": "formspark", "endpoint": "https://submit-form.com/aHeuOMHHg", "formtrackEnabled": true, "turnstileSiteKey": "", "externalURL": "" },
   "brand": { "ivory": "#F2F0EA", "noir": "#0A0A0C", "bordeaux": "#4A002E" },
   "copyrightYear": 2026,
-  "privacy": { "approved": false, "contactEmail": "privacy@follent.net", "retention": "" },
+  "privacy": { "approved": true, "contactEmail": "privacy@follent.net", "retention": "We retain enquiry submissions and related email correspondence for up to seven years, or longer where reasonably necessary to provide agreed services, meet legal obligations or resolve disputes. When records are no longer needed, we delete them from active systems. Copies may remain in backups until those backups expire under the relevant provider's backup arrangements." },
   "launch": { "migrationReviewed": false, "businessDetailsReviewed": false },
   "redirects": []
 }
