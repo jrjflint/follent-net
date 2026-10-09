@@ -1,12 +1,12 @@
 {
   "businessName": "Follent.net",
   "wordmark": "James Follent",
-  "legalName": "",
+  "legalName": "James Robert Jack Follent",
   "tagline": "Professional websites. Without unnecessary complexity.",
   "description": "Professional website design, copywriting and managed lead capture for Sydney small businesses.",
   "domain": "https://follent.net",
   "package": "growth",
-  "abn": "",
+  "abn": "26 510 530 608",
   "phone": "",
   "email": "",
   "address": { "street": "", "suburb": "", "city": "Sydney", "state": "NSW", "postcode": "", "country": "AU" },
@@ -16,11 +16,11 @@
   "bookingURL": "",
   "googleBusinessProfileURL": "",
   "socialURLs": [],
-  "analytics": { "measurementId": "", "searchConsoleVerification": "" },
+  "analytics": { "measurementId": "G-K54S78JQ7L", "searchConsoleVerification": "" },
   "form": { "provider": "formspark", "endpoint": "https://submit-form.com/aHeuOMHHg", "formtrackEnabled": true, "turnstileSiteKey": "", "externalURL": "" },
   "brand": { "ivory": "#F2F0EA", "noir": "#0A0A0C", "bordeaux": "#4A002E" },
   "copyrightYear": 2026,
-  "privacy": { "approved": false, "contactEmail": "", "retention": "" },
+  "privacy": { "approved": false, "contactEmail": "privacy@follent.net", "retention": "" },
   "launch": { "migrationReviewed": false, "businessDetailsReviewed": false },
   "redirects": []
 }

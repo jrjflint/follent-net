@@ -17,6 +17,10 @@ test('all package builds enforce page and form boundaries', async () => {
   for (const variant of ['essential', 'professional', 'growth']) {
     const { out, pages } = await build({ configFile: '.qa/test-disabled.json', output: `.qa/${variant}`, packageOverride: variant });
     assert.equal(pages, variant === 'essential' ? 3 : 10);
+    const privacy = await readFile(path.join(out, 'privacy-policy/index.html'), 'utf8');
+    assert.ok(privacy.includes(`rel="canonical" href="${fixture.domain}/privacy-policy/"`));
+    assert.match(privacy, /href="\/privacy-policy\/"/);
+    assert.equal(context({ ...fixture, package: variant }).route('privacy-policy'), '/privacy-policy/');
     const html = await readFile(path.join(out, variant === 'essential' ? 'index.html' : 'contact/index.html'), 'utf8');
     assert.equal(html.includes('id="enquiry-form"'), variant === 'growth');
     if (variant === 'growth') { assert.match(html, /<fieldset disabled>/); assert.match(html, /data-enabled="false"/); }

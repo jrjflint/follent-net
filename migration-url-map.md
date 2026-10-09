@@ -1,11 +1,12 @@
 # Follent.net migration URL map
 
-**Status: inventory pending; no live migration redirects have been approved.** The local workspace was empty and the live site could not be retrieved during planning. There is no WordPress export or verified list of old URLs available in this repository.
+**Status: inventory incomplete; no live migration redirects have been approved.** The live site could not be retrieved during initial planning. The privacy-policy URL was subsequently retrieved during the 9 October 2026 privacy review; this is a partial inventory only. There is no WordPress export or complete verified list of old URLs available in this repository.
 
 Before removing anything, export the WordPress/WooCommerce content and media, collect sitemap URLs, Search Console top pages, analytics landing pages and known backlinks. Record canonical paths, page purpose and relevant content/assets. Back up the existing hosting and DNS configuration, including mail records.
 
 | OLD URL | NEW URL | REDIRECT REQUIRED? | NOTES |
 | --- | --- | --- | --- |
+| https://follent.net/privacy-policy/ | https://follent.net/privacy-policy/ | No same-URL redirect | Verified historical policy path. Normal and unpublished review builds use this route. See `docs/privacy-policy/REVIEW.md`; the rewritten content remains unpublished. |
 | TODO: inventory existing homepage | https://follent.net/ | Review | Homepage positioning changes to website services; no same-URL redirect needed. |
 | TODO: existing service/about/contact URLs | TODO: best matching new page | Review | Retain useful copy/assets only after accuracy and permission review. |
 | TODO: individual wine product URLs | TODO: verified equivalent on https://chateaufollent.com.au/ | Review | Only redirect to an equivalent product/category where relevant. Verify target exists. |

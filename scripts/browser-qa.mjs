@@ -37,7 +37,7 @@ try {
   if (!process.argv.includes('--social-only')) {
     await build();
     const base = await server('dist', 4175);
-    const urls = ['/', '/services/', '/pricing/', '/how-it-works/', '/about/', '/contact/', '/privacy/', '/success/', '/form-error/', '/404.html'];
+    const urls = ['/', '/services/', '/pricing/', '/how-it-works/', '/about/', '/contact/', '/privacy-policy/', '/success/', '/form-error/', '/404.html'];
     for (const width of [320, 390, 768, 1440]) {
       const ctx = await browser.newContext({ viewport: { width, height: 1000 }, reducedMotion: 'reduce' });
       const page = await ctx.newPage();
@@ -134,7 +134,7 @@ try {
     let analyticsRequests = 0;
     await analyticsContext.route('https://www.googletagmanager.com/**', route => { analyticsRequests++; return route.fulfill({ contentType: 'application/javascript', body: 'window.qaAnalyticsLoaded=true;' }); });
     const analyticsPage = await analyticsContext.newPage();
-    await analyticsPage.goto(analyticsBase + '/privacy/?privateQuery=neverTrackThis');
+    await analyticsPage.goto(analyticsBase + '/privacy-policy/?privateQuery=neverTrackThis');
     assert.equal(analyticsRequests, 0);
     await analyticsPage.getByRole('button', { name: 'Decline', exact: true }).click();
     assert.equal(analyticsRequests, 0);
@@ -143,7 +143,7 @@ try {
     await analyticsPage.waitForFunction(() => window.qaAnalyticsLoaded);
     assert.equal(analyticsRequests, 1);
     const gaConfig = await analyticsPage.evaluate(() => Array.from(window.dataLayer).map(x => Array.from(x)).find(x => x[0] === 'config')[2]);
-    assert.equal(gaConfig.page_location, analyticsBase + '/privacy/');
+    assert.equal(gaConfig.page_location, analyticsBase + '/privacy-policy/');
     await analyticsPage.evaluate(() => window.follentTrack('generate_lead', { package: 'growth' }));
     const event = await analyticsPage.evaluate(() => Array.from(window.dataLayer).map(x => Array.from(x)).find(x => x[0] === 'event'));
     assert.deepEqual(event, ['event', 'generate_lead', { package: 'growth' }]);

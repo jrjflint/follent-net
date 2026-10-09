@@ -25,7 +25,7 @@ export async function loadConfig(filename = 'config/site.json') {
 }
 export function context(site, { preview = false } = {}) {
   const isEssential = site.package === 'essential';
-  const route = slug => isEssential && !['privacy', 'success', 'form-error', '404'].includes(slug) ? `/#${slug === 'how-it-works' ? 'process' : slug === 'about' ? 'examples' : slug}` : slug ? `/${slug}/` : '/';
+  const route = slug => isEssential && !['privacy-policy', 'success', 'form-error', '404'].includes(slug) ? `/#${slug === 'how-it-works' ? 'process' : slug === 'about' ? 'examples' : slug}` : slug ? `/${slug}/` : '/';
   const adapt = href => isEssential && /^\/(services|pricing|how-it-works|about|contact)\/$/.test(href) ? route(href.split('/')[1]) : href;
   const configured = site.form.endpoint && !/FORM_ID|PLACEHOLDER/i.test(site.form.endpoint);
   const formEnabled = Boolean(!preview && site.package === 'growth' && site.form.provider === 'formspark' && configured && site.privacy.approved && (site.privacy.contactEmail || site.email) && site.privacy.retention);
@@ -67,7 +67,7 @@ export async function build({ configFile = 'config/site.json', output = 'dist', 
   await mkdir(out, { recursive: true });
   await cp(path.join(root, 'assets'), path.join(out, 'assets'), { recursive: true });
   await writeFile(path.join(out, 'assets/css/brand.css'), `:root{--ivory:${site.brand.ivory};--noir:${site.brand.noir};--bordeaux:${site.brand.bordeaux}}\n`);
-  const selected = pageDefinitions.filter(p => !ctx.isEssential || ['', 'privacy', '404'].includes(p.slug));
+  const selected = pageDefinitions.filter(p => !ctx.isEssential || ['', 'privacy-policy', '404'].includes(p.slug));
   const hashes = new Set();
   for (const page of selected) {
     const html = document(page, ctx);

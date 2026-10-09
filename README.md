@@ -13,7 +13,9 @@ npm run preview
 
 Open http://127.0.0.1:4173. Stop the server with Ctrl+C. Run `npm test` for package-boundary and form-transport checks, `npm run check` for generated link/metadata checks, and `npm run check:launch` for business setup prerequisites.
 
-**Current state:** a working preview, not a launched business website. The supplied Formspark endpoint is configured, but contact details, approved privacy/retention details, optional Google IDs and migration review are outstanding. The contact form is visibly disabled until privacy setup is complete. No live enquiry or notification delivery has been verified. DNS and the existing website have not been changed.
+**Current state:** a working preview, not a launched business website. The supplied Formspark endpoint is configured. The owner has supplied the legal name, ABN and privacy email; general contact details, approved privacy/retention details, optional Google IDs and migration review are outstanding. The contact form is visibly disabled until privacy setup is complete. No live enquiry or notification delivery has been verified. DNS and the existing website have not been changed.
+
+The privacy page uses `/privacy-policy/`, matching the existing live URL, in every package build. The [unpublished privacy rewrite and OAIC review](docs/privacy-policy/REVIEW.md) includes a separate local preview at that address. The rewrite is excluded from normal builds pending confirmation of material business practices; do not publish the review output. Normal builds retain the current brief draft notice at the corrected address.
 
 ## Source structure
 
@@ -99,15 +101,60 @@ Formspark reference: [documentation](https://documentation.formspark.io/), [UTM/
 
 ## Google and privacy
 
+Follent's GA4 measurement ID is `G-K54S78JQ7L`, configured through `analytics.measurementId`. The existing external module creates the Google tag after consent; do not paste a second inline tag into page templates. Explicit preview builds keep Analytics disabled, including at dev.follent.net when built with `--preview`. Receipt in GA4 must be verified after deployment and opt-in; local mocked tests do not prove live collection. Reconcile the unpublished privacy-policy rewrite's Analytics statements before publishing it.
+
 Set `analytics.measurementId` to a real GA4 `G-...` ID and `analytics.searchConsoleVerification` to the verification token if using HTML verification. DNS verification is an alternative for Search Console; do that manually. Add the sitemap after verification. Add the approved Google Business Profile URL to the shared config.
 
 GA4 loads only after explicit visitor opt-in, only on Professional/Growth production builds, and respects Do Not Track and Global Privacy Control. Privacy offers a preference reset. Conversion tracking sends only the event and selected package after an accepted enhanced submission, never names, email or message text. Initial page location/referrer omit query strings. Turn off unneeded enhanced-measurement features in the GA dashboard and verify its configured events before launch. Review the privacy notice against actual providers, geographic processing and retention; the draft is not a completed legal review.
 
+## Cloudflare Workers deployment (current Follent setup)
+
+The successful Follent deployment uses **Workers Static Assets**, serving `dist`, with GitHub repository `jrjflint/follent-net` and Worker `follent-net`. Workers and Pages share a dashboard but have separate deployment settings. Workers is a valid static hosting option; the Pages instructions below are an alternative, not a requirement to recreate the working deployment.
+
+1. In **Workers & Pages → follent-net → Settings → Builds**, use production branch `main`, root `/`, build command `npm run build -- --preview`, and deploy command `npx wrangler deploy` for the interim site. Node 22 is selected by `.nvmrc`. Save settings and trigger a new Git build; the explicit flag is necessary because this engine's automatic Cloudflare branch detection is Pages-specific.
+2. Open **Domains → Add Domain** (or **Settings → Domains & Routes → Add → Custom Domain**, depending on dashboard layout) and add `dev.follent.net`. Workers custom domains require an active Cloudflare zone. Cloudflare creates DNS and the certificate; do not manually CNAME dev to workers.dev. Resolve any conflicting dev record first, preserving apex, www and email records.
+3. Verify the new deployment at dev: `build-info.json` must report preview true and forms/analytics false; inspect noindex headers, robots, clean page URLs and custom 404 behaviour. The dashboard's Production/Preview labels do not activate the engine's preview flag. Git pushes trigger connected builds; check the deployed commit and build logs rather than assuming a push proves deployment.
+4. Wrangler auto-configured static assets from `dist` in the initial Cloudflare build checkout. That does not commit its generated configuration to GitHub. Before production cutover, commit explicit Workers configuration, verify custom-domain persistence, static 404 handling and generated headers/redirects, and preserve the dependency-free site build and local `npm run preview` command.
+5. After migration/launch approval, configure the final apex separately, change the build command to `npm run build`, redeploy and verify production output and routing. Keep dev on a separate staging Worker if it must remain independent. Privacy activation and live delivery verification remain separate prerequisites.
+
+References: [Workers Static Assets](https://developers.cloudflare.com/workers/static-assets/), [Workers custom domains](https://developers.cloudflare.com/workers/configuration/routing/custom-domains/).
+
 ## Cloudflare Pages deployment
+
+### Interim deployment at dev.follent.net
+
+Use **Pages** Git integration. A screen describing a “Worker project” with `npx wrangler deploy` and `npx wrangler preview` is the Workers flow. Return to **Workers & Pages → Create application → Pages → Connect to Git**. If offered, use the “Looking to deploy Pages?” entry point. The Pages screen asks for a production branch and build output directory; no Wrangler deploy/preview command is needed.
+
+1. Authorise GitHub and select `jrjflint/follent-net`. Only committed, pushed source is deployed.
+2. Use these interim settings:
+
+   | Setting | Value |
+   | --- | --- |
+   | Project name | `follent-net`, if available; record its actual hostname |
+   | Production branch | `main` |
+   | Framework preset | None |
+   | Build command | `npm run build -- --preview` |
+   | Build output directory | `dist` |
+   | Root directory | Leave blank (repository root) |
+   | Environment variable | `NODE_VERSION=22` in production and preview environments |
+
+3. Select **Save and Deploy** and check the build log. Explicit `--preview` forces staging safeguards even on main: disabled forms, analytics and Formtrack; HTML/header noindex directives; and blocked crawling. Cloudflare calls main “production”, but this is an interim review build. Noindex is not access control.
+4. Test the assigned `https://<actual-project-name>.pages.dev` address, all main pages, `/privacy-policy/`, mobile navigation and the disabled Contact form. Check `build-info.json` reports `preview: true`, `formEnabled: false`, `analyticsEnabled: false`; verify deployed `X-Robots-Tag` and `robots.txt`.
+5. Open **Custom domains → Set up a domain**, add `dev.follent.net`, and follow activation instructions **before** adding DNS manually. Cloudflare-managed DNS can create the CNAME after confirmation; otherwise add `CNAME dev → <actual-project-name>.pages.dev` at your current DNS provider. A subdomain does not require moving nameservers. Preserve existing apex, www and mail records.
+6. Wait for domain/certificate activation and check `https://dev.follent.net/`. Keep `config.domain` as `https://follent.net`, the final canonical origin. Configure access protection separately if private review is required.
+7. Each main push updates this interim deployment. Deploy normal `dist` output; do not deploy `.qa/privacy-review`, which contains the unpublished policy rewrite.
+
+### Reviewed cutover to follent.net
+
+After migration and launch review, reuse this Pages project. Change the build command to **`npm run build`**, redeploy and verify approved production output before routing the apex. Removing `--preview` removes forced staging safeguards on main; enquiries still require separate privacy/configuration activation. Add apex and www through Pages, preserve mail records, verify SSL and approved redirects, and retain old hosting for rollback. The apex requires Cloudflare nameservers, so review the whole DNS zone before a nameserver migration. Build-setting changes require a new deployment.
+
+If dev and apex both remain attached to the production deployment, they serve the same main build. For independent staging afterward, move dev to a preview branch using Cloudflare's [custom branch alias instructions](https://developers.cloudflare.com/pages/how-to/custom-branch-aliases/), or use a separate project retaining the explicit preview command. Non-main Cloudflare builds automatically disable forms/analytics in this engine.
+
+### Standard production settings
 
 1. Create a GitHub repository. Initialise this directory with `git init -b main` if needed; add and commit the source, then add your GitHub remote and push `main`. Do not commit `.env`, `.qa` or `dist`.
 2. In Cloudflare, create a **Pages** project, connect GitHub and select the repository. Use framework preset **None**, production branch **main**, build command **`npm run build`**, output directory **`dist`**, root directory blank, and `NODE_VERSION=22`.
-3. Test the first deployment on its `pages.dev` address. Cloudflare's environment marks non-main branches as previews; the build adds `noindex`, blocks crawling and disables forms/analytics there. Treat the initial main-branch `pages.dev` deployment as private launch preparation, and restrict access or avoid sharing it until cutover. Main builds use production canonicals.
+3. Test the first deployment on its `pages.dev` address. Non-main Cloudflare builds add noindex, block crawling and disable forms/analytics. A main build using `npm run build` is indexable with production canonicals; use the explicit interim `--preview` command above until launch approval. Configure access protection separately if required.
 4. Review [migration-url-map.md](migration-url-map.md), backups and [LAUNCH_CHECKLIST.md](LAUNCH_CHECKLIST.md). Configure and test contact details/forms first. Run `npm run check:launch`.
 5. Add `follent.net` through the Pages project's **Custom domains** flow. The apex needs the domain's nameservers on Cloudflare; preserve mail records and unrelated DNS. Follow the dashboard instructions, then verify the issued SSL certificate. No DNS changes are automated by this project.
 6. Add `www.follent.net` if required and use a Cloudflare redirect rule to permanently redirect `www` to `https://follent.net`, preserving path and query. The shared `domain` remains the preferred HTTPS apex. Do not use a same-path catch-all rule in `_redirects`: it would risk loops on the canonical host.
@@ -115,7 +162,7 @@ GA4 loads only after explicit visitor opt-in, only on Professional/Growth produc
 8. Reviewed path mappings in `config.redirects` produce Cloudflare's `_redirects`. Test actual redirect behaviour after deployment; the local preview server does not implement redirect rules.
 9. Changes pushed to branches generate previews. Review before merging into `main`; each main push builds production. Keep the previous Pages deployment available for rollback. Roll back the Pages deployment and, if applicable, manually restore the previous domain routing.
 
-Cloudflare reference: [build configuration](https://developers.cloudflare.com/pages/configuration/build-configuration/), [custom domains](https://developers.cloudflare.com/pages/configuration/custom-domains/), [headers](https://developers.cloudflare.com/pages/configuration/headers/), [redirects](https://developers.cloudflare.com/pages/configuration/redirects/).
+Cloudflare reference: [Git integration and dashboard setup](https://developers.cloudflare.com/pages/get-started/git-integration/), [build configuration](https://developers.cloudflare.com/pages/configuration/build-configuration/), [custom domains](https://developers.cloudflare.com/pages/configuration/custom-domains/), [headers](https://developers.cloudflare.com/pages/configuration/headers/), [redirects](https://developers.cloudflare.com/pages/configuration/redirects/).
 
 ## Security and performance
 

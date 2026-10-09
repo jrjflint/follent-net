@@ -18,6 +18,10 @@
 
 ## Domain cutover — manual, after migration review
 
+- [ ] Confirm hosting type: Follent's current deployment is Workers Static Assets. Follow README's Workers instructions for dev; use the Pages-specific items below only for Pages projects. Verify the deployed commit, explicit preview flag, headers and custom 404s before cutover.
+- [ ] For interim dev, choose Pages Git integration (not Workers/Wrangler), main, `npm run build -- --preview`, `dist`, Node 22; register dev in Pages before adding its CNAME. Preserve old-site and mail DNS.
+- [ ] Verify dev noindex headers/HTML, blocked crawling and disabled forms/analytics; deploy normal dist, not unpublished privacy-review output.
+- [ ] At approved cutover, remove `--preview`, redeploy and inspect production output before routing the apex. Decide whether dev should move to a preview branch or separate staging project.
 - [ ] Connect GitHub to Cloudflare Pages: `main`, `npm run build`, `dist`, Node 22.
 - [ ] Test a branch preview; ensure noindex and disabled enquiries/analytics.
 - [ ] Preserve DNS email records; add the custom domain through Pages and verify SSL.

@@ -48,6 +48,10 @@ Review targets and loops. Do not redirect unrelated deleted URLs to the homepage
 
 ## 6. Build, QA and launch
 
+Follent currently uses Workers Static Assets; follow [the current Workers instructions](README.md#cloudflare-workers-deployment-current-follent-setup) for that deployment. The following Pages procedure is an alternative for client projects using Pages. Both serve the same generated static site; do not mix their domain registration or deployment settings.
+
+Follow [README's Cloudflare Pages instructions](README.md#cloudflare-pages-deployment). Choose **Pages → Connect to Git**, rather than the Workers screen with Wrangler commands. For an interim domain use main, framework None, `npm run build -- --preview`, output `dist`, repository root and `NODE_VERSION=22`. Register the subdomain through Pages before adding its CNAME; preserve existing-site and mail DNS. The explicit preview flag disables enquiries/analytics and indexing on main. After launch review, switch to `npm run build`, redeploy and connect the final domain. Keep independent staging on a preview branch or separate project afterward.
+
 ```sh
 npm run build
 npm test
