@@ -7,7 +7,6 @@ import { document } from '../src/layouts/document.mjs';
 import { pageDefinitions } from '../src/pages/content.mjs';
 import { submitFormspark } from '../assets/js/form-provider.js';
 import { escapeHTML } from '../src/lib/html.mjs';
-import { packages, managedPlans } from '../src/data/offers.mjs';
 
 test('all package builds enforce page and form boundaries', async () => {
   const fixture = await loadConfig();
@@ -16,7 +15,7 @@ test('all package builds enforce page and form boundaries', async () => {
   await writeFile(path.join(root, '.qa/test-disabled.json'), JSON.stringify(fixture));
   for (const variant of ['essential', 'professional', 'growth']) {
     const { out, pages } = await build({ configFile: '.qa/test-disabled.json', output: `.qa/${variant}`, packageOverride: variant });
-    assert.equal(pages, variant === 'essential' ? 3 : 10);
+    assert.equal(pages, pageDefinitions.filter(page => page.packages.includes(variant)).length);
     const privacy = await readFile(path.join(out, 'privacy-policy/index.html'), 'utf8');
     assert.ok(privacy.includes(`rel="canonical" href="${fixture.domain}/privacy-policy/"`));
     assert.match(privacy, /href="\/privacy-policy\/"/);
@@ -90,16 +89,4 @@ test('Formtrack is opt-in and only enabled with an active Growth Formspark form'
   assert.equal(context(site).formEnabled, true);
   assert.doesNotMatch(document(page, context(site)), /data-formtrack|unpkg.com/);
   assert.doesNotMatch(headers(context(site), []), /unpkg.com/);
-});
-
-test('form field contract and selector prices use shared offer data', async () => {
-  const site = await loadConfig();
-  const html = document(pageDefinitions.find(p => p.slug === 'contact'), context(site));
-  for (const name of ['name', 'business_name', 'email', 'phone', 'website', 'need', 'package', 'timeline', 'message', 'consent']) assert.ok(html.includes(`name="${name}"`), `Missing field: ${name}`);
-  assert.doesNotMatch(html, /name="business"/);
-  for (const offer of [...packages, ...managedPlans]) {
-    assert.ok(html.includes(`value="${offer.id}"`));
-    assert.ok(html.includes(`$${offer.price.toLocaleString('en-AU')}${managedPlans.includes(offer) ? '/month' : ''} ex GST`));
-  }
-  assert.match(html, /value="custom">Other \/ custom requirement/);
 });

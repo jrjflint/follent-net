@@ -84,6 +84,10 @@ Read-only inspect authorised Cloudflare project commands, worker name, asset/404
 
 ## T08 — Reusable QA and non-writing browser mode
 
+Implementation adds a six-page different-business fixture (three Essential pages), independent privacy/metadata and no reference integration IDs, separates Follent field/price assertions and derives QA routes/counts from manifests. Ordinary browser checks intercept external traffic and assert artwork bytes/mtime unchanged. Export is explicit via social-only, with an optional .qa review destination; garden does not claim native intake coverage before T09.
+
+**Completed 12 October 2026.** Twenty Node tests pass. Default reference browser QA passes 40 responsive checks/eight behaviour scenarios; garden passes 24/two, both with zero axe/script violations and unchanged artwork bytes/mtime. Explicit artwork export to `.qa/social-export.png` succeeds without touching source branding. The source image SHA-256 remains 5CF8E9C4726E5BE0A6C0D87CE8545AFAA4F378AFB5DF5D06E3E454EDA144E6A4. Normal/package/garden output and docs checks pass. No real provider request was allowed. Remote push verification is the completion checkpoint.
+
 **P1 · ENGINE + FOLLENT · F8 · Dependencies: T01, T04, T06**
 
 Separate generic capability/transport tests from Follent price/copy expectations. Add a different-business fixture with own pages/metadata/privacy. Make artwork export explicit via existing `--social-only`; ordinary browser QA must not rewrite tracked branding. Derive routes/counts from manifest/build capabilities.

@@ -44,9 +44,10 @@ The optional browser tools are deliberately excluded from runtime dependencies. 
 ```sh
 npm install --prefix .qa/tools --no-save playwright@1.64.0 @axe-core/playwright@4.13.0 lighthouse@13.5.0 html-validate@11.16.2
 node scripts/browser-qa.mjs
+node scripts/browser-qa.mjs --fixture garden
 ```
 
-Set `CHROME_PATH` if Chrome is installed elsewhere. Browser QA uses local ports 4175–4177, produces screenshots and JSON evidence under `.qa/`, creates local fixture configurations and mocks all form/GA requests. It regenerates `assets/images/social.png` from configured branding; run `npm run build` after regenerating the image if exporting it separately. For image export alone: `node scripts/browser-qa.mjs --social-only`.
+Set `CHROME_PATH` if Chrome is installed elsewhere. Browser QA uses local ports 4175–4178, derives routes from the built manifest, produces screenshots/evidence under `.qa/`, and intercepts all external requests. Reference form/GA scenarios use local mocks; no real provider submission occurs. Ordinary QA preserves artwork bytes and modification time. `--fixture garden` selects different-business copy/pages/privacy, with no native intake configured until the separate form-shell task. Default results remain `.qa/browser-results.json`; garden results are `.qa/browser-garden-results.json`, with reference-/garden-prefixed screenshots. Artwork export is explicit: `node scripts/browser-qa.mjs --social-only` writes the source image and requires rebuilding; `--social-out .qa/social-export.png` instead writes an ignored review image. The export helper contains Follent-specific artwork text, so adapt or replace artwork for clients rather than treating it as generic service copy.
 
 Run `npm run preview` in another terminal, then:
 
@@ -106,3 +107,5 @@ T03 separates generic helpers from Follent commercial sections. Thirteen tests p
 T04 manifest checks pass with seventeen tests. Synthetic add/remove/renamed pages derive navigation/Essential routes and script placement; malformed manifests, missing section/CTA targets and missing utilities fail before replacing output. All 23 reference HTML files remain byte-identical, with package/output/docs checks passing. No new browser/performance measurement is claimed for unchanged HTML.
 
 T05 schema checks pass with nineteen tests: omitted/explicit Follent graph compatibility, invalid-token rejection and generated client Organization identity without invented address/rating. All 23 reference HTML files remain byte-identical. No rich-result eligibility or live search behaviour is asserted.
+
+T08 passes twenty tests and both browser fixtures: reference 40 responsive checks/eight scenarios; garden 24/two; zero axe/script violations. Both ordinary runs assert tracked image bytes/mtime unchanged; SHA-256 remains 5CF8E9C4726E5BE0A6C0D87CE8545AFAA4F378AFB5DF5D06E3E454EDA144E6A4. Explicit review-only artwork export succeeds under `.qa`. External requests are intercepted, with reference transport/Analytics mocked and no native garden intake configured at this checkpoint. No live enquiries or new Lighthouse measurements.
