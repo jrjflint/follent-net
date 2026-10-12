@@ -6,6 +6,10 @@ Duplicate the repository into the client's own GitHub repository. Rename it, kee
 
 Set `package` in `config/site.json` to `essential`, `professional` or `growth`. Essential emits one scrolling main page; Professional/Growth emit the six core pages. Privacy and 404 are utility pages; Growth also uses the success/error experience. The five/eight-page commercial allowance is for agreed main content pages; trim or add entries in `pageDefinitions` to match the client's signed scope. Do not carry a six-page reference implementation into a five-page client agreement without adjusting it.
 
+**Before any client build:** Follent's copied config contains active integrations and privacy approval. Reset `form.endpoint`, `form.turnstileSiteKey`, `form.externalURL`, both Google IDs, retention and redirects to empty; set Formtrack and all privacy/launch review flags false. Replace the privacy contact, legal identity, ABN, contacts and domain with verified client values. Build with `--preview` until review is complete. Never serve an identity-only copy with Follent's endpoint or Analytics ID. A safe starting config is proposed in [T01](docs/architecture/TASKS.md#t01--safe-client-starting-configuration), not yet implemented.
+
+Professional and Growth currently generate ten total pages, including success/error utilities in both. Essential generates three. These observed counts are reference output, not client page allowances; see [T04](docs/architecture/TASKS.md#t04--central-pagenavigation-manifest).
+
 ## 2. Replace identity and assets
 
 - Update business name, legal name, tagline, description, ABN if appropriate, canonical domain and copyright year.
@@ -60,6 +64,6 @@ npm run check:launch
 npm run preview
 ```
 
-Review real phones and desktop browsers, keyboard navigation, form delivery, spelling, GST amounts and every CTA. Run Lighthouse and accessibility checks on the final configured site; changing fonts, photos or scripts can change results. Use [LAUNCH_CHECKLIST.md](LAUNCH_CHECKLIST.md), deploy a separate Cloudflare Pages project, connect the approved domain manually and monitor enquiries and search indexing after launch.
+Review real phones and desktop browsers, keyboard navigation, form delivery, spelling, GST amounts and every CTA. Run Lighthouse and accessibility checks on the final configured site; changing fonts, photos or scripts can change results. Use [LAUNCH_CHECKLIST.md](LAUNCH_CHECKLIST.md) and the selected hosting procedure. Pages is the default for new client projects; Workers is the recorded Follent setup. Connect the approved domain manually only after launch authorisation, and monitor enquiries/search indexing.
 
-Privacy copy is business-specific in `src/pages/privacy-policy.mjs`. Replace Follent’s operator, email/CRM arrangements, retention and provider disclosures when cloning; configuration alone does not rewrite these facts.
+Normal privacy currently renders from `src/pages/content.mjs`; the numbered Follent policy is a separate review path in `src/pages/privacy-policy.mjs`. Review both until [T02](docs/architecture/TASKS.md#t02--one-explicit-privacy-rendering-path) unifies them. Replace operator, provider and practice disclosures with verified client facts; config does not rewrite the numbered copy. Do not publish Follent's Microsoft/Twenty/MFA/retention assertions for another client.

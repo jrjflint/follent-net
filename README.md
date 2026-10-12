@@ -13,9 +13,9 @@ npm run preview
 
 Open http://127.0.0.1:4173. Stop the server with Ctrl+C. Run `npm test` for package-boundary and form-transport checks, `npm run check` for generated link/metadata checks, and `npm run check:launch` for business setup prerequisites.
 
-**Current state:** a working replacement site, not an authorised production cutover. The owner approved form activation and supplied ordinary-enquiry/email retention wording on 9 October 2026. Normal Growth builds now enable the configured Formspark form; preview builds still disable submissions and tracking. The optional GA4 ID is configured. General contact details, Search Console setup and migration/business launch reviews remain outstanding. [Isolated synthetic form testing](docs/form-e2e/REPORT.md) verified enhanced/native transport and storage; the owner confirmed matching notifications at james@follent.net. This does not verify active collection from the deployed origin or approve launch. DNS and the existing website have not been changed.
+**Recorded implementation state:** owner-approved form activation and retention were recorded on 9 October 2026. Source configuration still enables Formspark and optional GA4 in normal Growth builds; previews disable collection/tracking. General contact details, Search Console and migration/business launch flags remain incomplete in the repository. [Isolated synthetic testing](docs/form-e2e/REPORT.md) recorded enhanced/native storage and owner-confirmed inbox receipt. These are dated observations, not verification of current deployed-origin collection or production cutover. This review made no DNS or hosting changes.
 
-The privacy page uses `/privacy-policy/` in every package build. Its numbered policy is implemented in `src/pages/privacy-policy.mjs`; [review notes](docs/privacy-policy/REVIEW.md) record evidence and outstanding owner checks. The local review build uses the same renderer with preview safeguards. This change has not been deployed.
+**Source review, 12 October 2026:** `/privacy-policy/` is preserved in every package. Normal builds currently render the brief notice in `src/pages/content.mjs`. The separate local review generator renders the numbered draft in `src/pages/privacy-policy.mjs`; the import in normal content is unused. Earlier claims that the numbered policy was integrated were incorrect. See [privacy review](docs/privacy-policy/REVIEW.md) and [architecture backlog T02](docs/architecture/TASKS.md#t02--one-explicit-privacy-rendering-path). The deployed commit and dashboard settings were not rechecked in this review.
 
 ## Source structure
 
@@ -24,6 +24,7 @@ config/site.json             Shared business, brand and integration configuratio
 src/data/offers.mjs           Packages, recurring plans, add-ons, process and FAQs
 src/data/projects.mjs         Verified portfolio entries
 src/pages/content.mjs         Page content and form markup
+src/pages/privacy-policy.mjs  Follent numbered policy used by the separate review generator
 src/partials/components.mjs   Shared content components
 src/layouts/document.mjs      Head, navigation, footer and structured data
 src/lib/html.mjs              Escaping and URL helpers
@@ -52,13 +53,15 @@ Business identity, domain, contact links, CTAs, location, analytics and form set
 
 The source content sells Follent services. When cloning for a tradesperson, consultant or other business, replace the service/pricing copy and modules rather than publishing Follent offers as their own. Page capacity is a commercial scope limit, not an automatic page generator. See [CLIENT_SETUP.md](CLIENT_SETUP.md).
 
+The [12 October architecture review](docs/architecture/REVIEW.md) maps reusable/business boundaries and disposable clone results. Its [prioritised task backlog](docs/architecture/TASKS.md) records proposed changes, not existing capabilities. Follow CLIENT_SETUP's safe reset before building a new client; copied Follent approval, endpoint and Google IDs remain active unless reset.
+
 All commercial values are AUD, ex GST. Essential support defaults to **14 days**, Professional to **30 days**, Growth to **90 days**. Growth includes up to **eight pages** and **one initial workflow/integration**; Lead Automation manages up to **two agreed workflows**. The monthly form service is separate from the website build. Third-party costs and usage allowances need confirmation in each proposal. The site does not provision integrations or monthly monitoring automatically.
 
 ## Formspark and alternative forms
 
 1. Create a form in Formspark and configure notification recipients, submission storage and spam filtering in its dashboard.
 2. Set `form.endpoint` to `https://submit-form.com/YOUR_FORM_ID`. A public form ID is not an API token. Keep all provider API tokens and spam verification secrets outside the repository.
-3. Review the privacy notice in `src/pages/privacy-policy.mjs`; supply retention wording and a privacy contact address. Set `privacy.approved` only after review.
+3. Review the normal brief privacy notice in `src/pages/content.mjs` and the separate numbered draft in `src/pages/privacy-policy.mjs`; supply accurate retention wording and contact. These are currently separate paths (see T02). Set `privacy.approved` only after the actual collection and public notice are reviewed.
 4. The form is enabled only for Growth, with a real endpoint and those privacy details. Preview builds disable submission even if production credentials are configured.
 5. Formspark's native HTML submission uses `_redirect` for `/success/`, `_error` for `/form-error/`, and `_append=false` to keep personal information out of redirect URLs. JavaScript adds validation, pending state, timeout, duplicate-click protection and recoverable errors. It redirects only after a successful HTTP response.
 6. Keep the provider's automatic spam filtering enabled. `_gotcha` provides an additional honeypot. For stronger protection, configure Cloudflare Turnstile in Formspark, store its **secret only in the provider dashboard**, and place its public site key in `form.turnstileSiteKey`. The generated CSP then permits the verification script and frame. Turnstile requires JavaScript; native forms without it still post normally when this optional challenge is not enabled.
@@ -109,7 +112,7 @@ GA4 loads only after explicit visitor opt-in, only on Professional/Growth produc
 
 ## Cloudflare Workers deployment (current Follent setup)
 
-The successful Follent deployment uses **Workers Static Assets**, serving `dist`, with GitHub repository `jrjflint/follent-net` and Worker `follent-net`. Workers and Pages share a dashboard but have separate deployment settings. Workers is a valid static hosting option; the Pages instructions below are an alternative, not a requirement to recreate the working deployment.
+The recorded Follent deployment uses **Workers Static Assets**, serving `dist`, with repository `jrjflint/follent-net` and Worker `follent-net`. These account details are recorded context, not a fresh live check on 12 October 2026. No explicit Wrangler configuration is tracked; reproducible configuration is [backlog T07](docs/architecture/TASKS.md#t07--reproducible-workers-deployment). Workers and Pages have separate settings. Pages remains the default client delivery pattern; do not recreate the recorded Follent deployment on Pages solely to follow that default.
 
 1. In **Workers & Pages → follent-net → Settings → Builds**, use production branch `main`, root `/`, build command `npm run build -- --preview`, and deploy command `npx wrangler deploy` for the interim site. Node 22 is selected by `.nvmrc`. Save settings and trigger a new Git build; the explicit flag is necessary because this engine's automatic Cloudflare branch detection is Pages-specific.
 2. Open **Domains → Add Domain** (or **Settings → Domains & Routes → Add → Custom Domain**, depending on dashboard layout) and add `dev.follent.net`. Workers custom domains require an active Cloudflare zone. Cloudflare creates DNS and the certificate; do not manually CNAME dev to workers.dev. Resolve any conflicting dev record first, preserving apex, www and email records.
@@ -118,6 +121,8 @@ The successful Follent deployment uses **Workers Static Assets**, serving `dist`
 5. After migration/launch approval, configure the final apex separately, change the build command to `npm run build`, redeploy and verify production output and routing. Keep dev on a separate staging Worker if it must remain independent. Privacy activation and live delivery verification remain separate prerequisites.
 
 References: [Workers Static Assets](https://developers.cloudflare.com/workers/static-assets/), [Workers custom domains](https://developers.cloudflare.com/workers/configuration/routing/custom-domains/).
+
+Platform guidance checked 12 October 2026: [Workers builds](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/) separates build/deploy/preview commands. [Static asset headers](https://developers.cloudflare.com/workers/static-assets/headers/) apply to asset responses, not automatically to responses from custom Worker code. Keep explicit `--preview` for staging/branch builds; verify actual project settings and deployed headers before launch. No dashboard or live domain was rechecked here.
 
 ## Cloudflare Pages deployment
 
@@ -142,19 +147,19 @@ Use **Pages** Git integration. A screen describing a “Worker project” with `
 4. Test the assigned `https://<actual-project-name>.pages.dev` address, all main pages, `/privacy-policy/`, mobile navigation and the disabled Contact form. Check `build-info.json` reports `preview: true`, `formEnabled: false`, `analyticsEnabled: false`; verify deployed `X-Robots-Tag` and `robots.txt`.
 5. Open **Custom domains → Set up a domain**, add `dev.follent.net`, and follow activation instructions **before** adding DNS manually. Cloudflare-managed DNS can create the CNAME after confirmation; otherwise add `CNAME dev → <actual-project-name>.pages.dev` at your current DNS provider. A subdomain does not require moving nameservers. Preserve existing apex, www and mail records.
 6. Wait for domain/certificate activation and check `https://dev.follent.net/`. Keep `config.domain` as `https://follent.net`, the final canonical origin. Configure access protection separately if private review is required.
-7. Each main push updates this interim deployment. Deploy normal `dist` output; do not deploy `.qa/privacy-review`, which contains the unpublished policy rewrite.
+7. Connected pushes trigger builds; verify the actual deployed commit. Deploy `dist` generated with the chosen preview/production command, never `.qa/privacy-review` (a separate policy review fixture).
 
 ### Reviewed cutover to follent.net
 
 After migration and launch review, reuse this Pages project. Change the build command to **`npm run build`**, redeploy and verify approved production output before routing the apex. Removing `--preview` removes forced staging safeguards on main; enquiries still require separate privacy/configuration activation. Add apex and www through Pages, preserve mail records, verify SSL and approved redirects, and retain old hosting for rollback. The apex requires Cloudflare nameservers, so review the whole DNS zone before a nameserver migration. Build-setting changes require a new deployment.
 
-If dev and apex both remain attached to the production deployment, they serve the same main build. For independent staging afterward, move dev to a preview branch using Cloudflare's [custom branch alias instructions](https://developers.cloudflare.com/pages/how-to/custom-branch-aliases/), or use a separate project retaining the explicit preview command. Non-main Cloudflare builds automatically disable forms/analytics in this engine.
+If dev and apex both remain attached to the production deployment, they serve the same main build. For independent staging afterward, move dev to a preview branch using Cloudflare's [custom branch alias instructions](https://developers.cloudflare.com/pages/how-to/custom-branch-aliases/), or use a separate project retaining the explicit preview command. Automatic safeguards apply only when `CF_PAGES=1` and `CF_PAGES_BRANCH` is not `main`; Workers or other CI must explicitly use `--preview` for staging/branch builds.
 
 ### Standard production settings
 
 1. Create a GitHub repository. Initialise this directory with `git init -b main` if needed; add and commit the source, then add your GitHub remote and push `main`. Do not commit `.env`, `.qa` or `dist`.
 2. In Cloudflare, create a **Pages** project, connect GitHub and select the repository. Use framework preset **None**, production branch **main**, build command **`npm run build`**, output directory **`dist`**, root directory blank, and `NODE_VERSION=22`.
-3. Test the first deployment on its `pages.dev` address. Non-main Cloudflare builds add noindex, block crawling and disable forms/analytics. A main build using `npm run build` is indexable with production canonicals; use the explicit interim `--preview` command above until launch approval. Configure access protection separately if required.
+3. Test the first deployment on its `pages.dev` address. Non-main Pages builds with the expected `CF_PAGES` variables add noindex and disable forms/analytics. A main build using `npm run build` is indexable with production canonicals; use explicit `--preview` until launch approval. Other hosting requires that explicit flag for staging. Configure access protection separately if required.
 4. Review [migration-url-map.md](migration-url-map.md), backups and [LAUNCH_CHECKLIST.md](LAUNCH_CHECKLIST.md). Configure and test contact details/forms first. Run `npm run check:launch`.
 5. Add `follent.net` through the Pages project's **Custom domains** flow. The apex needs the domain's nameservers on Cloudflare; preserve mail records and unrelated DNS. Follow the dashboard instructions, then verify the issued SSL certificate. No DNS changes are automated by this project.
 6. Add `www.follent.net` if required and use a Cloudflare redirect rule to permanently redirect `www` to `https://follent.net`, preserving path and query. The shared `domain` remains the preferred HTTPS apex. Do not use a same-path catch-all rule in `_redirects`: it would risk loops on the canonical host.

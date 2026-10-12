@@ -4,7 +4,7 @@
 
 This repository serves two purposes: **Follent.net is the commercial website and Growth-tier reference implementation**, and **the underlying engine is a reusable foundation for future small-business websites**. The intended live site demonstrates what the business sells; do not assume it is already launched or that its integrations are active. Check current configuration and documentation.
 
-Preserve a static-first, fast, accessible, SEO-friendly engine with low dependencies, low operating costs and straightforward client cloning. Standard delivery is **GitHub → Cloudflare Pages → Cloudflare DNS → custom domain**. A human developer should be able to understand and maintain it without learning a bespoke framework.
+Preserve a static-first, fast, accessible, SEO-friendly engine with low dependencies, low operating costs and straightforward client cloning. Default client delivery is **GitHub → Cloudflare Pages → Cloudflare DNS → custom domain**. Follent's recorded deployment uses Workers Static Assets; follow README's separate Workers procedure and verify actual account settings rather than switching hosts to match the client default. A human developer should be able to understand and maintain it without learning a bespoke framework.
 
 For significant work, identify whether it affects **ENGINE**, **FOLLENT**, or both:
 
@@ -29,6 +29,7 @@ The existing architecture is approved: **Node 22+ at build time, dependency-free
 | `src/data/offers.mjs` | Follent packages, recurring plans, add-ons, process and FAQs; commercial source of truth |
 | `src/data/projects.mjs` | Verified, permission-cleared portfolio entries |
 | `src/pages/content.mjs` | Page definitions, business copy, page composition and native form markup |
+| `src/pages/privacy-policy.mjs` | Follent numbered privacy review draft; normal content currently renders a separate brief notice |
 | `src/partials/components.mjs` | Shared section/component markup |
 | `src/layouts/document.mjs` | Document head, navigation, footer, metadata and business/breadcrumb schema |
 | `src/lib/html.mjs` | Escaping, JSON-LD serialisation and URL helpers |
@@ -113,7 +114,7 @@ Target approximately **95+ in Lighthouse Performance, Accessibility, Best Practi
 
 ## Deployment, migration and client cloning
 
-Preserve Cloudflare Pages settings: **production branch `main`, framework None, build `npm run build`, output `dist`, Node 22+**. The local preview is a development tool, not production infrastructure. Keep `_headers` and `_redirects` compatible with Pages and documented. Non-main Cloudflare builds use the existing preview safeguards; test them when changing deployment logic.
+For Pages projects preserve **production branch `main`, framework None, build `npm run build`, output `dist`, Node 22+**. Follow the selected hosting procedure in README; Workers is a separate deployment configuration. The local preview is a development tool, not production infrastructure. Keep generated `_headers` and `_redirects` compatible with static hosting and documented. Automatic non-main safeguards are Pages-specific (`CF_PAGES=1`); Workers/other staging builds require explicit `--preview`. Test safeguards when changing deployment logic.
 
 Do not automatically change DNS, retire the old site or perform production cutover. Follow the authorised deployment scope, [migration-url-map.md](migration-url-map.md) and [LAUNCH_CHECKLIST.md](LAUNCH_CHECKLIST.md). Back up and inventory old URLs/assets, review mappings and verify destinations before removing anything. Emit only reviewed redirects. Never send unrelated wine/product URLs to the Follent homepage; use a verified equivalent Château Follent destination where appropriate. Preserve mail records, verify apex/www/SSL behaviour and retain rollback options.
 

@@ -1,12 +1,12 @@
 # Privacy policy review — 9 October 2026
 
-Implemented in the project for review; not deployed or published. This changes FOLLENT copy and reusable ENGINE print styling. It is not legal certification.
+Prepared in the project for review; this is not legal certification. **Correction from source inspection on 12 October 2026:** the numbered policy is not wired into normal page rendering. Earlier integration claims below were mistaken, not deployment evidence. See [architecture review](../architecture/REVIEW.md) and T02 for the resolution task.
 
 ## Source and review
 
-`src/pages/privacy-policy.mjs` is authoritative. Normal builds now render the numbered policy at `/privacy-policy/`; `docs/privacy-policy/policy.html` is a review snapshot. Nine statements, 28 clauses, contents fragments, footer links and canonical URL are preserved. Existing form, Analytics and approval configuration is unchanged.
+`src/pages/privacy-policy.mjs` is the numbered draft's source and `policy.html` its review snapshot. Normal builds render the separate brief notice in `src/pages/content.mjs`; its numbered-policy import is unused. The review generator replaces that notice locally. Nine statements and 28 clauses apply to that review output, while `/privacy-policy/` remains shared. Existing form, Analytics and approval configuration is unchanged.
 
-Run `node docs/privacy-policy/preview.mjs`, then `node scripts/serve.mjs --dir .qa/privacy-review --port 4173`. Review `http://127.0.0.1:4173/privacy-policy/`. This local output uses the same renderer with disabled forms/Analytics, noindex and an empty sitemap. Do not upload it. Normal Growth output describes the enabled form and provides the Analytics preference control.
+Run `node docs/privacy-policy/preview.mjs`, then `node scripts/serve.mjs --dir .qa/privacy-review --port 4173`. Review `http://127.0.0.1:4173/privacy-policy/`. This separate output has disabled forms/Analytics, noindex and an empty sitemap. Do not upload it. Normal Growth output remains the brief notice with configured retention and an Analytics preference control.
 
 ## Confirmed facts and limits
 

@@ -26,6 +26,7 @@ Customise this static website reference template for the client below. Inspect t
 
 1. Map client needs to the selected package; identify gaps before adding out-of-scope work.
 2. Update central configuration, page copy, approved assets, metadata, schema and navigation. Remove Follent-specific pricing and reference content unless the client actually sells those services.
+   First follow CLIENT_SETUP's safe reset of inherited integrations and approvals. Use explicit preview mode until client review; never retain Follent's endpoint or Google IDs. Review the selected schema type rather than assuming the current ProfessionalService type suits the client.
 3. Essential: one scrolling content page, supplied copy and contact/booking links, no hosted form. Professional: agreed multi-page scope, human-reviewed copy and local SEO, no hosted form. Growth: agreed pages, native enquiry capture and only agreed integration hooks.
 4. Retain semantic HTML, keyboard focus, contrast, reduced motion, performance and useful error states. No essential content may depend on JavaScript.
 5. Keep provider transport separate from presentation. Do not add a database, ecommerce, heavy framework or automation-platform dependency without a concrete approved need. Never commit secrets or credentials.
@@ -35,4 +36,4 @@ Customise this static website reference template for the client below. Inspect t
 
 Deliver the customised source, generated preview, changed configuration summary, test evidence and outstanding human decisions. The client must approve factual copy, design, privacy and migration before launch.
 
-Privacy copy is business-specific in `src/pages/privacy-policy.mjs`. Replace Follent’s operator, email/CRM arrangements, retention and provider disclosures when cloning; configuration alone does not rewrite these facts.
+Follow CLIENT_SETUP for the current privacy rendering paths and README for commands/hosting. Normal output still uses the brief notice; the numbered policy is a separate review draft. Replace business-specific policy facts and review actual output, not just configuration. Consult `docs/architecture/REVIEW.md` and `TASKS.md` for observed limitations; backlog recommendations are not implemented features.

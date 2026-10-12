@@ -18,13 +18,13 @@
 
 ## Domain cutover — manual, after migration review
 
-- [ ] Confirm hosting type: Follent's current deployment is Workers Static Assets. Follow README's Workers instructions for dev; use the Pages-specific items below only for Pages projects. Verify the deployed commit, explicit preview flag, headers and custom 404s before cutover.
-- [ ] For interim dev, choose Pages Git integration (not Workers/Wrangler), main, `npm run build -- --preview`, `dist`, Node 22; register dev in Pages before adding its CNAME. Preserve old-site and mail DNS.
-- [ ] Verify dev noindex headers/HTML, blocked crawling and disabled forms/analytics; deploy normal dist, not unpublished privacy-review output.
+- [ ] Confirm hosting type and actual account settings. Follent is recorded as Workers Static Assets; Pages is the default for new client projects. Follow the matching README procedure, not both. Verify deployed commit, preview state, headers and custom 404s.
+- [ ] For interim staging use `npm run build -- --preview`, `dist` and Node 22; verify noindex headers/HTML, blocked crawling and disabled forms/analytics. Never deploy `.qa/privacy-review`.
+- [ ] Workers only: verify explicit Wrangler/static-asset configuration, build/deploy/preview commands and Worker custom domain setup. Do not add a Pages CNAME. Current missing tracked configuration is architecture task T07.
+- [ ] Pages only: use Git integration, framework None, main, `dist`; register its custom domain through Pages before following its DNS instructions. Automatic non-main safeguards apply only with Pages environment variables; Workers staging requires explicit `--preview`.
 - [ ] At approved cutover, remove `--preview`, redeploy and inspect production output before routing the apex. Decide whether dev should move to a preview branch or separate staging project.
-- [ ] Connect GitHub to Cloudflare Pages: `main`, `npm run build`, `dist`, Node 22.
 - [ ] Test a branch preview; ensure noindex and disabled enquiries/analytics.
-- [ ] Preserve DNS email records; add the custom domain through Pages and verify SSL.
+- [ ] Preserve DNS email records; add custom domains through the chosen platform and verify SSL. No nameserver/domain changes are implied by repository pushes.
 - [ ] Configure www-to-apex and HTTP-to-HTTPS handling; verify no loops and preserved paths.
 - [ ] Test approved old-path redirects, product destinations and removed URLs on the deployed domain.
 - [ ] Verify deployed security headers and enabled third-party functionality.
