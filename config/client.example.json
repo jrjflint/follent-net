@@ -1,5 +1,6 @@
 {
   "businessName": "Example Client — preview only",
+  "schemaType": "Organization",
   "wordmark": "Example Client",
   "legalName": "",
   "tagline": "Client content awaiting review.",

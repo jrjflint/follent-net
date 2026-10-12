@@ -3,7 +3,7 @@ import { button, contactDetails } from '../partials/components.mjs';
 
 export function schemaFor(page, ctx) {
   const s = ctx.site;
-  const business = { '@type': 'ProfessionalService', '@id': `${s.domain}/#business`, name: s.businessName, url: s.domain, description: s.description, areaServed: s.serviceArea };
+  const business = { '@type': s.schemaType || 'ProfessionalService', '@id': `${s.domain}/#business`, name: s.businessName, url: s.domain, description: s.description, areaServed: s.serviceArea };
   if (s.legalName) business.legalName = s.legalName;
   if (s.phone) business.telephone = s.phone;
   if (s.email) business.email = s.email;

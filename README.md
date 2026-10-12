@@ -47,6 +47,8 @@ Configuration files must be inside the repository. Explicit checks in `src/lib/c
 
 Business identity, domain, contact links, CTAs, location, analytics and form settings live in `config/site.json`. Empty optional fields are omitted from business schema; a city alone is not presented as a physical street address. Never add private credentials here: this is public source and produces public HTML.
 
+Optional `schemaType` selects the business JSON-LD type. Follent explicitly retains `ProfessionalService`; omitted values preserve that legacy behaviour. New clients start with `Organization`. Validation checks a simple type token only, not that the type exists or suits the business: choose against the client's verified facts and the [Schema.org vocabulary](https://schema.org/Organization). No address, rating or rich-result eligibility is invented. Schema.org marks [ProfessionalService deprecated](https://schema.org/ProfessionalService); the existing Follent graph is preserved in this compatibility task, and any later type change requires factual review.
+
 `package` controls delivered capabilities, not the packages advertised by the Follent business:
 
 | Variant | Generated structure | Hosted form | Analytics |

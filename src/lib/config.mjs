@@ -26,6 +26,7 @@ export function validateConfig(site) {
   for (const key of ['brand', 'address', 'primaryCTA', 'secondaryCTA', 'form', 'analytics', 'privacy', 'launch']) object(site[key], key);
   for (const key of ['businessName', 'wordmark', 'tagline', 'description', 'domain', 'package']) string(site[key], key, { empty: false });
   for (const key of ['legalName', 'abn', 'phone', 'email', 'serviceArea', 'bookingURL', 'googleBusinessProfileURL']) string(site[key], key);
+  if (site.schemaType !== undefined && (typeof site.schemaType !== 'string' || !/^[A-Z][A-Za-z0-9]*$/.test(site.schemaType))) throw new Error('schemaType must be a simple Schema.org type token');
   if (!['essential', 'professional', 'growth'].includes(site.package)) throw new Error('Unknown package');
   let domain;
   try { domain = new URL(site.domain); } catch { throw new Error('domain must be an HTTPS origin'); }

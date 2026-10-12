@@ -32,7 +32,7 @@ Only publish approved facts. Do not invent reviews, outcomes, awards or business
 
 ## 4. Set search and integrations
 
-Update unique titles/descriptions in page definitions, the social image and location copy. Review `schemaFor()` for the client's appropriate business type; do not use a local-business address without verified details. The build generates canonicals, sitemap, robots and breadcrumbs. FAQ content is visible, but FAQ rich-result markup is deliberately not added to this ordinary service website.
+Update unique titles/descriptions in page definitions, the social image and location copy. Set `schemaType` to an appropriate verified Schema.org type; the client example uses Organization, while omission retains the reference's legacy ProfessionalService type. Token validation does not verify vocabulary membership or suitability. Do not add a local-business address without verified details. The build generates canonicals, sitemap, robots and breadcrumbs. FAQ content is visible, but FAQ rich-result markup is deliberately not added to this ordinary service website.
 
 Configure Google Analytics/Search Console and optional Growth lead capture using README instructions. Essential/Professional must not acquire a hosted form by accident. Confirm provider notifications, quotas, recurring costs and external workflow scope. Never put secrets in browser code.
 

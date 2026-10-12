@@ -54,6 +54,8 @@ Extend existing definitions with navigation placement/order, supported packages 
 
 ## T05 — Adaptable business schema
 
+**Completed 12 October 2026.** Optional schemaType validates simple tokens; Follent explicitly retains ProfessionalService and the client example uses Organization. Nineteen tests pass, including omitted/explicit compatibility, invalid inputs and generated client identity/no invented address/rating. Normal/package/client output and docs checks pass; all 23 Follent HTML files are byte-identical. Official Schema.org pages were checked; deprecated ProfessionalService remains only for compatibility pending factual review. Remote push verification is the completion checkpoint.
+
 **P1 · ENGINE · F5 · Dependencies: T06**
 
 Add optional public `schemaType`, defaulting to existing ProfessionalService for compatibility; explicitly keep that value for Follent and use conservative Organization in the client example. Validate a simple Schema.org type token and require factual human selection. Preserve omission of unknown address/rating details. Fixed font/icon/social paths remain manual customisation, documented in setup.
