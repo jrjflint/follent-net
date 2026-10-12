@@ -42,6 +42,8 @@ After privacy approval and activation, submit a clearly labelled test enquiry to
 
 For an external advanced form, use `provider: "external"` plus an HTTPS `externalURL`. For a different native backend, change both HTML submission metadata and the isolated provider transport. Update privacy and CSP to match actual providers. Avoid introducing a CRM, automation SDK or Zapier dependency into the visual template.
 
+For straightforward native intake, supply client definitions to `enquiryForm(ctx, intake)` in `src/partials/enquiry-form.mjs`. Replace Follent's `src/data/enquiry.mjs` labels/choices or create client content data, then compose it from the client page. Optional queryField/analyticsField require select fields; condition references a field/controller and the value that hides an empty field. A client need not have website/package fields. Keep the reserved consent/spam/status/redirect controls, provider transport and actual privacy review; never enable real collection merely to test new fields.
+
 ## 5. Review privacy and migration
 
 Provide actual privacy/retention wording and a contact address. Set `privacy.approved`, `launch.businessDetailsReviewed` and `launch.migrationReviewed` only after the corresponding reviews. If no prior site exists, record that in the URL map and mark the migration review complete. Archive client site content and a URL inventory before any replacement. Approved redirects are explicit config entries:

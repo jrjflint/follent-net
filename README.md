@@ -23,10 +23,12 @@ Open http://127.0.0.1:4173. Stop the server with Ctrl+C. Run `npm test` for pack
 config/site.json             Shared business, brand and integration configuration
 src/data/offers.mjs           Packages, recurring plans, add-ons, process and FAQs
 src/data/projects.mjs         Verified portfolio entries
+src/data/enquiry.mjs          Follent intake labels, fields and select choices
 src/pages/content.mjs         Page content and form markup
 src/pages/privacy-policy.mjs  Shared policy entry, Follent content and editable client draft
 src/partials/components.mjs   Shared content components
 src/partials/follent-commercial.mjs  Business-specific sections with explicit offer inputs
+src/partials/enquiry-form.mjs  Reusable native form shell and stable provider controls
 src/layouts/document.mjs      Head, navigation, footer and structured data
 src/lib/html.mjs              Escaping and URL helpers
 src/lib/pages.mjs             Manifest validation, package selection, navigation and route targets
@@ -81,7 +83,9 @@ All commercial values are AUD, ex GST. Essential support defaults to **14 days**
 6. Keep the provider's automatic spam filtering enabled. `_gotcha` provides an additional honeypot. For stronger protection, configure Cloudflare Turnstile in Formspark, store its **secret only in the provider dashboard**, and place its public site key in `form.turnstileSiteKey`. The generated CSP then permits the verification script and frame. Turnstile requires JavaScript; native forms without it still post normally when this optional challenge is not enabled.
 7. Set up notification routing and the initial workflow in the chosen external platform. Confirm receipt, storage, notification, acknowledgement and routing using non-sensitive test data. Provider acceptance does not guarantee inbox delivery; monitor it independently.
 
-Provider transport lives in `assets/js/form-provider.js`; visual form markup lives in `src/pages/content.mjs`. Replace the transport and native action/hidden fields together if choosing a different native provider. To use an externally hosted form, set `form.provider` to `external` and supply `form.externalURL` (HTTPS): the native form is replaced with a link. This supports Fillout or an equivalent without tying the template to an embed SDK. If you later need an embed, add it deliberately with its required CSP origins and accessibility review.
+Provider transport lives in `assets/js/form-provider.js`; the native shell is `src/partials/enquiry-form.mjs`, composed by pages with business-specific definitions such as `src/data/enquiry.mjs`. Replace transport and native action/hidden controls together when changing backend. To use an externally hosted form, set `form.provider` to `external` and supply `form.externalURL` (HTTPS): it links out rather than embedding. If an embed is needed, review its CSP/accessibility deliberately.
+
+Intake definitions are ordinary ES-module data: labelled unique fields (`text`, `email`, `tel`, `url`, `select`, `textarea`), select choices, optional query preselection and optional conditional-field controller/value. Reserved consent/spam/redirect/status controls remain in the shell. Query and Analytics selectors must name select fields; the neutral internal `window.siteTrack` hook receives only the submitted public choice in the existing `package` event parameter, never free-text fields. Follent keeps its submitted names, package IDs and website-field condition. Other clients can supply different choices/fields without editing provider transport or assuming `need`, `website` or `package` exist. Collection approval remains separate from field definitions.
 
 ### Campaign attribution with Formtrack
 

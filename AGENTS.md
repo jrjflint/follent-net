@@ -28,10 +28,12 @@ The existing architecture is approved: **Node 22+ at build time, dependency-free
 | `config/site.json` | Business identity, domain, contacts, address/service area, CTAs, brand colours, package, Google settings, form settings, review flags and approved redirects |
 | `src/data/offers.mjs` | Follent packages, recurring plans, add-ons, process and FAQs; commercial source of truth |
 | `src/data/projects.mjs` | Verified, permission-cleared portfolio entries |
+| `src/data/enquiry.mjs` | Follent intake fields, labels, choices and optional enhancement settings |
 | `src/pages/content.mjs` | Page definitions, business copy, page composition and native form markup |
 | `src/pages/privacy-policy.mjs` | Unified privacy entry, Follent numbered content and client scaffold; contact/retention come from config |
 | `src/partials/components.mjs` | Generic button, section introduction and contact markup; no commercial data imports |
 | `src/partials/follent-commercial.mjs` | Follent commercial sections with catalogue/process/FAQ data supplied by the page layer |
+| `src/partials/enquiry-form.mjs` | Reusable native shell, field rendering and reserved consent/spam/redirect/status controls |
 | `src/layouts/document.mjs` | Document head, navigation, footer, metadata and business/breadcrumb schema |
 | `src/lib/html.mjs` | Escaping, JSON-LD serialisation and URL helpers |
 | `src/lib/config.mjs` | Explicit public config checks before output replacement |
@@ -94,7 +96,7 @@ Château Follent ecommerce is intended to move to **https://chateaufollent.com.a
 
 Preserve the separation **native HTML/CSS form → configurable endpoint/provider → optional automation → business systems**. Formspark is the default Growth infrastructure, not the product sold in customer-facing copy. Advanced providers and automation platforms must remain replaceable.
 
-- Form visuals/fields live in `src/pages/content.mjs`; enhanced interaction in `assets/js/form.js`; provider transport in `assets/js/form-provider.js`. When replacing a native backend, update both HTML action/provider metadata and transport. `provider: "external"` with an HTTPS `externalURL` currently links to an advanced external form; it is not an implemented embed.
+- Form pages compose the native shell in `src/partials/enquiry-form.mjs` with business definitions such as `src/data/enquiry.mjs`; enhancement is `assets/js/form.js`, transport is `assets/js/form-provider.js`. Replace native action/provider controls and transport together for a new backend. `provider: "external"` with HTTPS `externalURL` links out; it is not an embed. Keep query/Analytics selectors limited to declared select choices and conditional field behaviour explicit; use `window.siteTrack` only for the existing non-personal conversion payload.
 - Preserve accessible labels, native validation, required-field indications, consent text, spam protection, pending/duplicate-click protection, recoverable errors and clear success behaviour. Keep native `_redirect` and a **separate `_error`** destination, and `_append=false` to avoid leaking enquiry data into URLs. Never report success without provider acceptance; HTTP acceptance still requires independent notification/delivery verification.
 - Unconfigured Formspark submissions remain disabled in HTML. Enabling them requires Growth, a real endpoint, reviewed privacy approval, retention wording and a privacy contact address. Preview builds disable forms and analytics. Do not bypass these safeguards or flip approval flags merely to make a check pass.
 - Optional `form.formtrackEnabled` uses Formtrack on active Growth Formspark Contact forms only. Keep the single async script after form markup, its narrow CSP permission and provider-generated attribution inputs. Capture Contact-URL campaign parameters without introducing cross-page persistence or copying them into redirects/analytics. A blocked tracking script must not block enquiries. Read README before changing submitted field names or package IDs.

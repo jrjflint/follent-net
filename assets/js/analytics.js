@@ -20,7 +20,7 @@ function activate() {
   script.async = true;
   document.head.append(script);
 }
-window.follentTrack = (event, params) => { if (loaded && preference === 'allow') window.gtag('event', event, params); };
+window.siteTrack = (event, params) => { if (loaded && preference === 'allow') window.gtag('event', event, params); };
 if (id && notice) {
   if (stored() === 'allow') activate();
   else if (!stored() && !navigator.globalPrivacyControl && navigator.doNotTrack !== '1') notice.hidden = false;

@@ -96,6 +96,10 @@ Separate generic capability/transport tests from Follent price/copy expectations
 
 ## T09 — Client-specific intake over a reusable form shell
 
+Implementation extracts native fields/controls into enquiry-form.mjs with Follent definitions in data/enquiry.mjs and independent garden choices. Query/conditional fields are optional; analytics selections are restricted to declared selects and refer to the submitted value even if the user edits while pending. Both producer/consumer use siteTrack. Follent field IDs, package values and provider transport remain unchanged; normal/preview gates remain in force. Isolated enabled UI-state fixtures use only a dummy endpoint with all external traffic intercepted, not real approvals or live delivery.
+
+**Completed 12 October 2026.** Twenty-two Node tests, normal/package output checks and both browser fixtures pass: reference 40 layouts/eight scenarios, garden 32/two, zero axe/script violations. Dedicated shell QA passes eight layouts/twelve mocked enhanced/native/validation/error/pending/blocked-tracking scenarios. HTML validation passes normal Contact and both shell fixtures after naming the existing Contact sidebar. Reference rendering preserves text, fields, prices and controls; intended differences are explicit form metadata and sidebar accessible-name attributes. Source branding, config and provider transport are unchanged. No live enquiry or delivery claim. Remote push verification is the completion checkpoint.
+
 **P1 · ENGINE + FOLLENT · F9 · Dependencies: T03, T08**
 
 Extract stable consent/spam/redirect/status controls from website-service intake options. Supply Follent package/need choices from business content with ordinary ES-module fields. Make conditional website-field behaviour explicit and optional. Rename internal Analytics bridge to a neutral name, updating producer/consumer together. Preserve Follent payload field names/package IDs and isolated provider transport.

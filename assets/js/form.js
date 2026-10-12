@@ -1,21 +1,23 @@
 import { submitFormspark } from './form-provider.js';
 const form = document.querySelector('#enquiry-form');
 if (form) {
-  const packageField = form.elements.namedItem('package');
-  const selected = new URLSearchParams(location.search).get('package');
-  if (selected !== null && Array.from(packageField.options).some(option => option.value === selected)) packageField.value = selected;
+  const queryField = form.dataset.queryField ? form.elements.namedItem(form.dataset.queryField) : null;
+  const selected = form.dataset.queryField ? new URLSearchParams(location.search).get(form.dataset.queryField) : null;
+  if (queryField instanceof HTMLSelectElement && selected !== null && Array.from(queryField.options).some(option => option.value === selected)) queryField.value = selected;
   const status = document.querySelector('#form-status');
   const button = form.querySelector('button[type="submit"]');
   const originalButton = button.innerHTML;
-  const needField = form.elements.namedItem('need');
-  const websiteField = form.elements.namedItem('website');
-  const updateWebsite = () => {
-    const hide = needField.value === 'A new website' && !websiteField.value;
-    websiteField.closest('.field').hidden = hide;
-    websiteField.disabled = hide || form.dataset.enabled !== 'true';
-  };
-  needField.addEventListener('change', updateWebsite);
-  updateWebsite();
+  const conditionalField = form.dataset.conditionalField ? form.elements.namedItem(form.dataset.conditionalField) : null;
+  const controller = form.dataset.conditionController ? form.elements.namedItem(form.dataset.conditionController) : null;
+  if (conditionalField && controller) {
+    const updateConditional = () => {
+      const hide = controller.value === form.dataset.conditionValue && !conditionalField.value;
+      conditionalField.closest('.field').hidden = hide;
+      conditionalField.disabled = hide || form.dataset.enabled !== 'true';
+    };
+    controller.addEventListener('change', updateConditional);
+    updateConditional();
+  }
   let pending = false;
   form.addEventListener('submit', async event => {
     event.preventDefault();
@@ -34,7 +36,10 @@ if (form) {
     status.textContent = 'Sending your enquiry…';
     try {
       await submitFormspark(form.action, data);
-      if (typeof window.follentTrack === 'function') window.follentTrack('generate_lead', { package: data.package || 'unspecified' });
+      const analyticsField = form.dataset.analyticsField ? form.elements.namedItem(form.dataset.analyticsField) : null;
+      const submittedSelection = analyticsField ? data[analyticsField.name] : '';
+      const selection = analyticsField instanceof HTMLSelectElement && Array.from(analyticsField.options).some(option => option.value === submittedSelection) ? submittedSelection : '';
+      if (typeof window.siteTrack === 'function') window.siteTrack('generate_lead', { package: selection || 'unspecified' });
       location.assign(form.dataset.success);
     } catch {
       status.textContent = 'We could not confirm your enquiry was received. Your details are still here. Check your connection and try again, or use a contact link. A retry may send a duplicate if the connection dropped after delivery.';

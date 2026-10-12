@@ -184,7 +184,7 @@ try {
     assert.equal(analyticsRequests, 1);
     const gaConfig = await analyticsPage.evaluate(() => Array.from(window.dataLayer).map(x => Array.from(x)).find(x => x[0] === 'config')[2]);
     assert.equal(gaConfig.page_location, analyticsBase + '/privacy-policy/');
-    await analyticsPage.evaluate(() => window.follentTrack('generate_lead', { package: 'growth' }));
+    await analyticsPage.evaluate(() => window.siteTrack('generate_lead', { package: 'growth' }));
     const event = await analyticsPage.evaluate(() => Array.from(window.dataLayer).map(x => Array.from(x)).find(x => x[0] === 'event'));
     assert.deepEqual(event, ['event', 'generate_lead', { package: 'growth' }]);
     results.behaviours.push('Mocked analytics: no request before opt-in or after decline; allow loads GA, query strings omitted, conversion payload excludes personal data.');
