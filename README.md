@@ -39,6 +39,8 @@ dist/                        Generated deployment output (ignored by Git)
 
 Edit source, not `dist/`. Every build safely replaces `dist/`. The build supports `--package essential|professional|growth`, `--preview`, `--config path` and `--out .qa/name`. Custom output is restricted to `dist` or children of `.qa` to protect source from accidental deletion.
 
+Configuration files must be inside the repository. Explicit checks in `src/lib/config.mjs` reject malformed groups/types, string-valued review flags, invalid privacy contacts and unreviewed/invalid redirects before output replacement. `build-info.json` records relative `configFile`, SHA-256 `configHash`, package and preview state, without credentials or full config. Launch checks use that config and reject stale bytes/conflicting `--config`. Older output without provenance requires explicit `--config` for launch checks; structural checking remains supported. Rebuild after config edits. `node scripts/check.mjs --dir .qa/client-example --launch --config config/client.example.json` intentionally fails until genuine client launch prerequisites are met.
+
 ## Configuration and reusable packages
 
 Business identity, domain, contact links, CTAs, location, analytics and form settings live in `config/site.json`. Empty optional fields are omitted from business schema; a city alone is not presented as a physical street address. Never add private credentials here: this is public source and produces public HTML.

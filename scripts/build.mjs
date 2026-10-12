@@ -5,28 +5,25 @@ import { fileURLToPath } from 'node:url';
 import { document } from '../src/layouts/document.mjs';
 import { pageDefinitions } from '../src/pages/content.mjs';
 import { clientPolicyIsDraft } from '../src/pages/privacy-policy.mjs';
-import { escapeHTML, safeURL } from '../src/lib/html.mjs';
+import { validateConfig } from '../src/lib/config.mjs';
+import { escapeHTML } from '../src/lib/html.mjs';
 
 export const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-export async function loadConfig(filename = 'config/site.json') {
-  const s = JSON.parse(await readFile(path.resolve(root, filename), 'utf8'));
-  if (!['essential', 'professional', 'growth'].includes(s.package)) throw new Error('Unknown package');
-  const domain = new URL(s.domain);
-  if (domain.protocol !== 'https:' || domain.pathname !== '/' || domain.search || domain.hash) throw new Error('domain must be an HTTPS origin');
-  s.domain = domain.origin;
-  for (const value of Object.values(s.brand)) if (!/^#[\da-f]{6}$/i.test(value)) throw new Error('Brand colours must use six-digit hex');
-  for (const url of [s.primaryCTA.href, s.secondaryCTA.href, s.bookingURL, s.googleBusinessProfileURL, s.form.externalURL, ...s.socialURLs].filter(Boolean)) safeURL(url);
-  if (!['formspark', 'external'].includes(s.form.provider)) throw new Error('Supported form providers: formspark or external');
-  if (s.form.formtrackEnabled !== undefined && typeof s.form.formtrackEnabled !== 'boolean') throw new Error('form.formtrackEnabled must be a boolean');
-  if (s.form.endpoint && !/^https:\/\/submit-form\.com\/[a-zA-Z0-9_-]+$/.test(s.form.endpoint)) throw new Error('Use a valid Formspark HTTPS endpoint');
-  if (s.analytics.measurementId && !/^G-[A-Z0-9]+$/.test(s.analytics.measurementId)) throw new Error('Use a valid GA4 measurement ID');
-  if (s.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s.email)) throw new Error('Invalid business email');
-  if (s.privacy.policy !== undefined && !['follent', 'client'].includes(s.privacy.policy)) throw new Error('privacy.policy must be follent or client');
+export function configPath(filename) {
+  const resolved = path.resolve(root, filename);
+  const relative = path.relative(root, resolved);
+  if (!relative || relative === '..' || relative.startsWith(`..${path.sep}`) || path.isAbsolute(relative)) throw new Error('Config must be a file inside the repository');
+  return resolved;
+}
+async function readConfig(filename) {
+  const bytes = await readFile(configPath(filename));
+  const s = validateConfig(JSON.parse(bytes.toString('utf8')));
   if (s.privacy.policy === 'follent' && (s.domain !== 'https://follent.net' || s.businessName !== 'Follent.net')) throw new Error('Replace the Follent policy selection with client policy content when cloning');
   if (s.privacy.policy !== 'follent' && clientPolicyIsDraft && s.privacy.approved) throw new Error('Replace and review clientPrivacy content before accepting client privacy approval');
   if (s.form.externalURL && !/^https:\/\//.test(s.form.externalURL)) throw new Error('External forms require HTTPS');
-  return s;
+  return { site: s, configHash: createHash('sha256').update(bytes).digest('hex') };
 }
+export async function loadConfig(filename = 'config/site.json') { return (await readConfig(filename)).site; }
 export function context(site, { preview = false } = {}) {
   const isEssential = site.package === 'essential';
   const route = slug => isEssential && !['privacy-policy', 'success', 'form-error', '404'].includes(slug) ? `/#${slug === 'how-it-works' ? 'process' : slug === 'about' ? 'examples' : slug}` : slug ? `/${slug}/` : '/';
@@ -57,11 +54,12 @@ export function headers(ctx, hashes) {
   return `/*\n  Content-Security-Policy: ${csp}\n  Referrer-Policy: strict-origin-when-cross-origin\n  X-Content-Type-Options: nosniff\n  X-Frame-Options: DENY\n  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()\n${ctx.preview ? '  X-Robots-Tag: noindex, nofollow\n' : ''}\n/assets/*\n  Cache-Control: public, max-age=3600\n\n/assets/fonts/*\n  Cache-Control: public, max-age=31536000, immutable\n\n/success/*\n  X-Robots-Tag: noindex\n\n/form-error/*\n  X-Robots-Tag: noindex\n`;
 }
 export async function build({ configFile = 'config/site.json', output = 'dist', preview = false, packageOverride } = {}) {
-  const site = await loadConfig(configFile);
+  const { site, configHash } = await readConfig(configFile);
   if (packageOverride) {
     if (!['essential', 'professional', 'growth'].includes(packageOverride)) throw new Error('Invalid package override');
     site.package = packageOverride;
   }
+  const configSource = path.relative(root, configPath(configFile)).split(path.sep).join('/');
   const ctx = context(site, { preview });
   const out = path.resolve(root, output);
   // Never delete source or a computed path outside the designated generated trees.
@@ -84,14 +82,9 @@ export async function build({ configFile = 'config/site.json', output = 'dist', 
   await writeFile(path.join(out, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls.map(url => `<url><loc>${escapeHTML(url)}</loc></url>`).join('')}</urlset>\n`);
   await writeFile(path.join(out, 'robots.txt'), preview ? 'User-agent: *\nDisallow: /\n' : `User-agent: *\nAllow: /\nSitemap: ${site.domain}/sitemap.xml\n`);
   await writeFile(path.join(out, '_headers'), headers(ctx, hashes));
-  const redirects = site.redirects.map(r => {
-    if (!r.reviewed || !/^\/(?!\/)[^\s?#]*$/.test(r.from) || ![301, 302].includes(r.status)) throw new Error('Redirects need reviewed=true, a path and status 301 or 302');
-    safeURL(r.to);
-    if (/\s/.test(r.to) || r.from === r.to) throw new Error('Invalid redirect destination');
-    return `${r.from} ${r.to} ${r.status}`;
-  });
+  const redirects = site.redirects.map(r => `${r.from} ${r.to} ${r.status}`);
   await writeFile(path.join(out, '_redirects'), `# Only reviewed migration mappings are emitted.\n${redirects.join('\n')}\n`);
-  await writeFile(path.join(out, 'build-info.json'), JSON.stringify({ package: site.package, preview, pages: selected.map(p => p.slug), formEnabled: ctx.formEnabled, analyticsEnabled: ctx.analyticsEnabled }, null, 2));
+  await writeFile(path.join(out, 'build-info.json'), JSON.stringify({ configFile: configSource, configHash, package: site.package, preview, pages: selected.map(p => p.slug), formEnabled: ctx.formEnabled, analyticsEnabled: ctx.analyticsEnabled }, null, 2));
   return { out, pages: selected.length, ctx };
 }
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

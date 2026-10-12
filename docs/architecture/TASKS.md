@@ -54,6 +54,10 @@ Add optional public `schemaType`, defaulting to existing ProfessionalService for
 
 ## T06 — Configuration validation and build provenance
 
+Implementation adds explicit config checks, repository-relative config paths and SHA-256 provenance. Bytes are read/validated/hashed once before output replacement. Launch checks require matching/current recorded config or explicit legacy config; ordinary structural checks remain compatible. Synthetic approvals exist only in ignored test fixtures.
+
+**Completed 12 October 2026.** Eleven Node tests pass, covering malformed groups/fields, string flags, invalid emails/URLs/redirects, preservation of previous output, correct custom-config launch checks, stale/mismatched provenance and explicit legacy input. Normal build/check, all reference package checks and documentation checks pass. No Follent config, real approval flags, tracking settings or assets changed. Remote push verification is the task commit's completion checkpoint.
+
 **P1 · ENGINE · F6 · Dependencies: none**
 
 Validate required groups with readable field errors, review flags as booleans, privacy email format and optional/redirect values before deleting generated output. Record relative config path in build-info; make launch checks use it, allow explicit `--config`, reject disagreement. No credentials/private facts in build-info.
