@@ -18,6 +18,10 @@ Add `config/client.example.json` with synthetic identity, empty endpoint/site ke
 
 ## T02 — One explicit privacy rendering path
 
+Implementation uses explicit `privacy.policy` (`follent` or `client`, omitted means client) and a source-level `clientPolicyIsDraft` marker so the default scaffold cannot receive collection approval. Contact/retention are config inputs; business-specific prose remains content. The duplicated HTML snapshot is retired and the review generator no longer replaces pages. Follent approval/integration flags are unchanged; central retention now matches the latest confirmed numbered wording. Verification and checkpoint status follow once all checks pass.
+
+**Completed 12 October 2026.** Nine Node tests pass, including real normal-build rendering, escaped retention/contact, clone non-inheritance and approval rejection. Normal build/output and reference package checks pass. Dedicated policy QA passes 320/390/768/1440px, 28 clauses, keyboard/no-JS/print and zero axe/browser errors or external requests. Normal and preview privacy HTML validation passes after fixing preview whitespace; mobile screenshot inspected. Documentation checks pass. Business/provider operations and publication remain unverified owner checks. Remote push verification is the task commit's completion checkpoint.
+
 **P0 · ENGINE + FOLLENT · F2 · Dependencies: none**
 
 Make normal Follent privacy call the reviewed numbered renderer, preserving nine statements/28 clauses and route. Complete factual review before publication. Use consistent approved contact/retention inputs; detailed legal/business wording stays in content. Never make Follent MFA/CRM/provider assertions another client's defaults. Review generator must use the normal renderer instead of replacing its page; generate/check the snapshot or retire it with updated links.

@@ -15,7 +15,7 @@ Open http://127.0.0.1:4173. Stop the server with Ctrl+C. Run `npm test` for pack
 
 **Recorded implementation state:** owner-approved form activation and retention were recorded on 9 October 2026. Source configuration still enables Formspark and optional GA4 in normal Growth builds; previews disable collection/tracking. General contact details, Search Console and migration/business launch flags remain incomplete in the repository. [Isolated synthetic testing](docs/form-e2e/REPORT.md) recorded enhanced/native storage and owner-confirmed inbox receipt. These are dated observations, not verification of current deployed-origin collection or production cutover. This review made no DNS or hosting changes.
 
-**Source review, 12 October 2026:** `/privacy-policy/` is preserved in every package. Normal builds currently render the brief notice in `src/pages/content.mjs`. The separate local review generator renders the numbered draft in `src/pages/privacy-policy.mjs`; the import in normal content is unused. Earlier claims that the numbered policy was integrated were incorrect. See [privacy review](docs/privacy-policy/REVIEW.md) and [architecture backlog T02](docs/architecture/TASKS.md#t02--one-explicit-privacy-rendering-path). The deployed commit and dashboard settings were not rechecked in this review.
+**T02 implementation, 12 October 2026:** `/privacy-policy/` now uses `src/pages/privacy-policy.mjs` in normal and review builds. Explicit `privacy.policy: "follent"` selects Follent's numbered content; `"client"` (also the omitted-field default) selects the client draft. The Follent selection is rejected for a different business/domain. The client scaffold cannot be approved until replaced in its content module. Contact/retention come from config, and preview text follows disabled capabilities. Earlier integration claims were corrected before this implementation; no deployed commit or dashboard setting is verified by this change. See [privacy review](docs/privacy-policy/REVIEW.md).
 
 ## Source structure
 
@@ -24,7 +24,7 @@ config/site.json             Shared business, brand and integration configuratio
 src/data/offers.mjs           Packages, recurring plans, add-ons, process and FAQs
 src/data/projects.mjs         Verified portfolio entries
 src/pages/content.mjs         Page content and form markup
-src/pages/privacy-policy.mjs  Follent numbered policy used by the separate review generator
+src/pages/privacy-policy.mjs  Shared policy entry, Follent content and editable client draft
 src/partials/components.mjs   Shared content components
 src/layouts/document.mjs      Head, navigation, footer and structured data
 src/lib/html.mjs              Escaping and URL helpers
@@ -63,7 +63,7 @@ All commercial values are AUD, ex GST. Essential support defaults to **14 days**
 
 1. Create a form in Formspark and configure notification recipients, submission storage and spam filtering in its dashboard.
 2. Set `form.endpoint` to `https://submit-form.com/YOUR_FORM_ID`. A public form ID is not an API token. Keep all provider API tokens and spam verification secrets outside the repository.
-3. Review the normal brief privacy notice in `src/pages/content.mjs` and the separate numbered draft in `src/pages/privacy-policy.mjs`; supply accurate retention wording and contact. These are currently separate paths (see T02). Set `privacy.approved` only after the actual collection and public notice are reviewed.
+3. Review the selected policy in `src/pages/privacy-policy.mjs`; supply accurate retention wording/contact in config. New clients must replace `clientPrivacy` and set `clientPolicyIsDraft=false` once the scaffold is replaced, then obtain owner review before setting `privacy.approved`. The draft marker describes source readiness, not legal approval. Never select Follent's policy for another business.
 4. The form is enabled only for Growth, with a real endpoint and those privacy details. Preview builds disable submission even if production credentials are configured.
 5. Formspark's native HTML submission uses `_redirect` for `/success/`, `_error` for `/form-error/`, and `_append=false` to keep personal information out of redirect URLs. JavaScript adds validation, pending state, timeout, duplicate-click protection and recoverable errors. It redirects only after a successful HTTP response.
 6. Keep the provider's automatic spam filtering enabled. `_gotcha` provides an additional honeypot. For stronger protection, configure Cloudflare Turnstile in Formspark, store its **secret only in the provider dashboard**, and place its public site key in `form.turnstileSiteKey`. The generated CSP then permits the verification script and frame. Turnstile requires JavaScript; native forms without it still post normally when this optional challenge is not enabled.

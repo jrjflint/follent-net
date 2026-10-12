@@ -4,6 +4,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { document } from '../src/layouts/document.mjs';
 import { pageDefinitions } from '../src/pages/content.mjs';
+import { clientPolicyIsDraft } from '../src/pages/privacy-policy.mjs';
 import { escapeHTML, safeURL } from '../src/lib/html.mjs';
 
 export const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -20,6 +21,9 @@ export async function loadConfig(filename = 'config/site.json') {
   if (s.form.endpoint && !/^https:\/\/submit-form\.com\/[a-zA-Z0-9_-]+$/.test(s.form.endpoint)) throw new Error('Use a valid Formspark HTTPS endpoint');
   if (s.analytics.measurementId && !/^G-[A-Z0-9]+$/.test(s.analytics.measurementId)) throw new Error('Use a valid GA4 measurement ID');
   if (s.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s.email)) throw new Error('Invalid business email');
+  if (s.privacy.policy !== undefined && !['follent', 'client'].includes(s.privacy.policy)) throw new Error('privacy.policy must be follent or client');
+  if (s.privacy.policy === 'follent' && (s.domain !== 'https://follent.net' || s.businessName !== 'Follent.net')) throw new Error('Replace the Follent policy selection with client policy content when cloning');
+  if (s.privacy.policy !== 'follent' && clientPolicyIsDraft && s.privacy.approved) throw new Error('Replace and review clientPrivacy content before accepting client privacy approval');
   if (s.form.externalURL && !/^https:\/\//.test(s.form.externalURL)) throw new Error('External forms require HTTPS');
   return s;
 }

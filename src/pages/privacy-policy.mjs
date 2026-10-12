@@ -1,15 +1,24 @@
-// Follent-specific policy copy: review and replace when cloning for another business.
+import { escapeHTML as e } from '../lib/html.mjs';
+
+// Replace clientPrivacy in the cloned site's content layer, then mark the scaffold replaced.
+// This is not owner approval: privacy.approved remains the separate collection gate.
+export const clientPolicyIsDraft = true;
+
+// One rendering entry point. The client copy must be replaced and reviewed in each clone.
 export function privacyPolicy(ctx) {
+  if (ctx.site.privacy.policy !== 'follent') return clientPrivacy(ctx);
+  const address = ctx.site.privacy.contactEmail || ctx.site.email;
+  const contact = address ? `<a href="mailto:${e(address)}">${e(address)}</a>` : 'the privacy contact supplied before launch';
   return `<article class="section" aria-labelledby="policy-title">
   <div class="container prose">
     <h1 id="policy-title">Privacy Policy</h1>
-    <p>Last updated: <time datetime="2026-10-09">9 October 2026</time></p>
+    <p>Last updated: <time datetime="2026-10-12">12 October 2026</time></p>
 
     <h2>Purpose</h2>
     <p>This policy explains how Follent.net handles personal information in connection with its website services, and how you can ask questions or raise a concern.</p>
 
     <h2>Approach</h2>
-    <p>You can browse our website without creating an account. ${ctx.formEnabled ? "Our enquiry form is available so you can tell us about your project." : "You can contact us by email; form submission is unavailable in this build."} Please share only the information needed to discuss it. ${ctx.analyticsEnabled ? "Optional Google Analytics loads only if you allow it." : "Optional Google Analytics is disabled in this build."} You can contact us about privacy at <a href="mailto:privacy@follent.net">privacy@follent.net</a>.</p>
+    <p>You can browse our website without creating an account. ${ctx.formEnabled ? "Our enquiry form is available so you can tell us about your project." : "You can contact us by email; native form submission is unavailable in this build."} Please share only the information needed to discuss it. ${ctx.analyticsEnabled ? "Optional Google Analytics loads only if you allow it." : "Optional Google Analytics is disabled in this build."} You can contact us about privacy at ${contact}.</p>
 
     <h2>Operator and legal context</h2>
     <p>Follent.net is operated by James Follent as a sole trader. In this Privacy Policy, ‘we’, ‘us’ and ‘our’ refer to James Follent.</p>
@@ -43,7 +52,7 @@ export function privacyPolicy(ctx) {
     <h2 id="policy-3">Policy Statement #3 — Storage, security and retention</h2>
     <p><strong>3.1</strong> We keep email correspondence in Microsoft-hosted email accounts and business enquiry records in our self-hosted Twenty CRM. Formspark processes and stores form submissions, and notifications create copies in our email inboxes, including a Google-hosted notification mailbox. Correspondence may also be accessed on our devices. Providers maintain technical logs and backups under their own arrangements; deleting one record does not automatically remove every email or backup copy.</p>
     <p><strong>3.2</strong> Email access requires multi-factor authentication. The website uses HTTPS. These safeguards help protect correspondence and submissions, but no system can guarantee that information will never be lost or accessed without permission.</p>
-    <p><strong>3.3</strong> We retain enquiry and correspondence records for as long as reasonably needed to respond, provide agreed services and maintain relevant business records. Enquiry records in our CRM may be retained for future business activities for up to seven years. Particular records may need to be retained to meet legal obligations or resolve disputes. Backup copies may remain until the relevant backups expire.</p>
+    <p><strong>3.3</strong> ${e(ctx.site.privacy.retention || 'Retention wording must be reviewed before collection is enabled.')}</p>
 
     <p>You can request deletion by contacting us using the details in clause 8.1. We will explain whether we can fulfil your request and any reasons for retaining particular records.</p>
 
@@ -59,12 +68,12 @@ export function privacyPolicy(ctx) {
     </ul>
 
     <h2 id="policy-5">Policy Statement #5 — Online activity and third-party services</h2>
-    <p><strong>5.1</strong> Google Analytics is configured to help us understand website use. In the normal build it loads only after you allow optional analytics and respects your browser’s Do Not Track and Global Privacy Control signals. The analytics preference is saved in your browser’s local storage; Google’s script can use cookies after you opt in. You can change your choice through the privacy page’s analytics preference control. Initial page addresses and referring addresses sent by our code omit query strings, and enquiry conversion events contain the selected package, not your name, email or project message. This information is not described as anonymous. Advertising tags, embedded social feeds and newsletter sign-up tools are not configured in this website.</p>
-    <p><strong>5.2</strong> Website providers process technical information such as IP addresses, request details and approximate location derived from IP addresses to deliver and protect their services. The website does not request precise device location. When available, Formtrack attaches campaign labels from the Contact page address to the enquiry, including ref, referrer and UTM parameters. These labels are not a browsing history. Blocking the script or disabling JavaScript does not prevent an enquiry.</p>
-    <p><strong>5.3</strong> This configuration does not carry campaign labels between pages or save them in browser storage. Formtrack is supplied by the unpkg script delivery service, which receives the browser request for its script. Please keep personal information out of campaign links.</p>
+    <p><strong>5.1</strong> ${ctx.analyticsEnabled ? 'Optional Google Analytics helps us understand website use. It loads only after you allow it and respects your browser’s Do Not Track and Global Privacy Control signals. The preference is saved in local storage; Google’s script can use cookies after you opt in. You can change your choice with the control below. Initial page and referring addresses omit query strings, and enquiry conversion events contain the selected package, not your name, email or project message. This information is not described as anonymous.' : 'Optional Google Analytics is disabled in this build; it does not load or send events from these pages.'} Advertising tags, embedded social feeds and newsletter sign-up tools are not configured in this website.</p>
+    <p><strong>5.2</strong> Website providers process technical information such as IP addresses, request details and approximate location derived from IP addresses to deliver and protect their services. The website does not request precise device location. ${ctx.formtrackEnabled ? 'Formtrack attaches campaign labels from the Contact page address to the enquiry, including ref, referrer and UTM parameters. These labels are not a browsing history. Blocking the script does not prevent an enquiry.' : 'Campaign attribution through Formtrack is disabled in this build.'}</p>
+    <p><strong>5.3</strong> This configuration does not carry campaign labels between pages or save them in browser storage. ${ctx.formtrackEnabled ? 'Formtrack is supplied by unpkg, which receives the browser request for its script.' : 'No Formtrack script request is made from this build.'} Please keep personal information out of campaign links.</p>
     <p><strong>5.4</strong> Following a link to an external website takes you to a service with its own information handling practices. Read that service’s privacy notice before giving it personal information.</p>
 
-    ${ctx.analyticsEnabled ? '<button class="button button-secondary" type="button" data-analytics-settings>Change analytics preference</button>' : ''}
+${ctx.analyticsEnabled ? '<button class="button button-secondary" type="button" data-analytics-settings>Change analytics preference</button>' : ''}
 
     <h2 id="policy-6">Policy Statement #6 — Overseas handling</h2>
     <p><strong>6.1</strong> Personal information, enquiry contents, technical logs and IP-derived approximate location may be processed, stored or accessed outside Australia by our service providers and their subprocessors. A provider’s business address does not establish where every item of data is handled. We do not represent that information remains solely in Australia.</p>
@@ -72,12 +81,12 @@ export function privacyPolicy(ctx) {
     <p><strong>6.3</strong> Provider locations and subprocessors can change. For current details, read the <a href="https://www.cloudflare.com/policies/privacy/">Cloudflare privacy policy</a>, <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHub privacy statement</a>, <a href="https://www.formspark.io/legal/privacy-policy/">Formspark privacy policy</a> and <a href="https://www.formspark.io/legal/subprocessors/">Formspark subprocessor list</a>. Also see the <a href="https://www.microsoft.com/en-us/privacy/privacystatement">Microsoft privacy statement</a> and <a href="https://policies.google.com/privacy?hl=en">Google privacy policy</a>. Contact us if you have questions about overseas handling of your enquiry.</p>
 
     <h2 id="policy-7">Policy Statement #7 — Access, correction and preferences</h2>
-    <p><strong>7.1</strong> Email <a href="mailto:privacy@follent.net">privacy@follent.net</a> to request access to personal information we hold about you, or to ask us to correct it. Describing the relevant interaction helps us find the right records. You do not need to use a special form.</p>
+    <p><strong>7.1</strong> Contact ${contact} to request access to personal information we hold about you, or to ask us to correct it. Describing the relevant interaction helps us find the right records. You do not need to use a special form.</p>
     <p><strong>7.2</strong> Before releasing or changing records, we will check that the request is from you or someone authorised to act for you. We will ask only for details reasonably needed for that check. If access or correction is limited, including to protect another person’s privacy or meet a legal requirement, we will explain why and how you can raise a concern.</p>
     <p><strong>7.3</strong> You can tell us how you prefer to be contacted or ask us to stop promotional messages at the same email address. A privacy request or project enquiry does not sign you up to a mailing list. We can still respond to your request and send communications needed for an agreed service.</p>
 
     <h2 id="policy-8">Policy Statement #8 — Privacy enquiries and complaints</h2>
-    <p><strong>8.1</strong> Contact James Follent through our monitored privacy inbox at <a href="mailto:privacy@follent.net">privacy@follent.net</a> with a privacy question or complaint, including a concern about a service provider’s handling of your information. Please describe what happened and the outcome you are seeking.</p>
+    <p><strong>8.1</strong> Contact James Follent through our monitored privacy inbox at ${contact} with a privacy question or complaint, including a concern about a service provider’s handling of your information. Please describe what happened and the outcome you are seeking.</p>
     <p><strong>8.2</strong> We will acknowledge your complaint, review the relevant information, ask for clarification where needed and explain our findings and any proposed steps to resolve it. If more time is needed, we will keep you informed. You can reply if you disagree or have further information.</p>
     <p><strong>8.3</strong> If the matter remains unresolved, the <a href="https://www.oaic.gov.au/privacy/privacy-complaints/lodge-a-privacy-complaint-with-us">Office of the Australian Information Commissioner’s complaint guidance</a> explains its process and eligibility rules. The OAIC can consider complaints within its jurisdiction; it does not investigate every business or privacy concern.</p>
     <p><strong>8.4</strong> This policy is available to read free of charge. Email us if you need it in another format, such as plain text or large print. We will discuss a suitable format and take reasonable steps to provide it.</p>
@@ -88,4 +97,10 @@ export function privacyPolicy(ctx) {
   </div>
 </article>
 `;
+}
+
+function clientPrivacy(ctx) {
+  const { site } = ctx;
+  const address = site.privacy.contactEmail || site.email;
+  return `<article class="section" aria-labelledby="policy-title"><div class="container prose"><h1 id="policy-title">Privacy notice — client draft</h1><p class="setup-notice">This is an unpublished draft for ${e(site.businessName)}. Replace this content with the client’s reviewed policy before setting privacy approval or enabling collection.</p><h2>Operator and contact</h2><p>${site.legalName ? `Proposed operator: ${e(site.legalName)}.` : 'The operator’s legal identity must be confirmed before publication.'}</p><p>${address ? `Privacy contact: <a href="mailto:${e(address)}">${e(address)}</a>.` : 'A monitored privacy contact must be supplied before publication.'}</p><h2>Information handling to review</h2><p>Confirm what this business collects, its purposes, storage, security, service providers, overseas handling, access and correction, complaints and deletion arrangements. Do not reuse another business’s practices as facts.</p><h2>Retention</h2><p>${e(site.privacy.retention || 'Client retention arrangements have not been supplied.')}</p><h2>Current build</h2><p>Enquiry collection requires reviewed client content and configuration. ${ctx.analyticsEnabled ? 'Optional Analytics requires its own accurate disclosure and visitor consent.' : 'Optional Analytics is disabled in this build.'}</p></div></article>`;
 }

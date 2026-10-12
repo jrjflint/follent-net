@@ -8,7 +8,7 @@ test('client example never inherits reference integrations or review approvals',
   const site = await loadConfig('config/client.example.json');
   const reference = await loadConfig();
   assert.deepEqual(site.analytics, { measurementId: '', searchConsoleVerification: '' });
-  assert.deepEqual(site.privacy, { approved: false, contactEmail: '', retention: '' });
+  assert.deepEqual(site.privacy, { approved: false, contactEmail: '', retention: '', policy: 'client' });
   assert.deepEqual(site.launch, { migrationReviewed: false, businessDetailsReviewed: false });
   assert.deepEqual(site.redirects, []);
   assert.equal(site.form.endpoint, '');

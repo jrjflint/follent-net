@@ -20,7 +20,7 @@
   "form": { "provider": "formspark", "endpoint": "", "formtrackEnabled": false, "turnstileSiteKey": "", "externalURL": "" },
   "brand": { "ivory": "#F2F0EA", "noir": "#0A0A0C", "bordeaux": "#4A002E" },
   "copyrightYear": 2026,
-  "privacy": { "approved": false, "contactEmail": "", "retention": "" },
+  "privacy": { "approved": false, "contactEmail": "", "retention": "", "policy": "client" },
   "launch": { "migrationReviewed": false, "businessDetailsReviewed": false },
   "redirects": []
 }

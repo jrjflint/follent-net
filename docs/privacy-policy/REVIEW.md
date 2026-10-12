@@ -1,12 +1,12 @@
 # Privacy policy review — 9 October 2026
 
-Prepared in the project for review; this is not legal certification. **Correction from source inspection on 12 October 2026:** the numbered policy is not wired into normal page rendering. Earlier integration claims below were mistaken, not deployment evidence. See [architecture review](../architecture/REVIEW.md) and T02 for the resolution task.
+Prepared in the project for review; this is not legal certification. **T02 update, 12 October 2026:** the source audit found the earlier integration claim was false; T02 now connects normal and review builds to the same policy renderer. That source fix is not evidence of publication, provider settings or operational adoption. See [architecture task status](../architecture/TASKS.md#t02--one-explicit-privacy-rendering-path).
 
 ## Source and review
 
-`src/pages/privacy-policy.mjs` is the numbered draft's source and `policy.html` its review snapshot. Normal builds render the separate brief notice in `src/pages/content.mjs`; its numbered-policy import is unused. The review generator replaces that notice locally. Nine statements and 28 clauses apply to that review output, while `/privacy-policy/` remains shared. Existing form, Analytics and approval configuration is unchanged.
+`src/pages/privacy-policy.mjs` is authoritative for normal/review rendering. Nine statements/28 clauses and `/privacy-policy/` are preserved for Follent. The duplicated HTML snapshot is retired; inspect generated normal/review HTML instead. Config selects `follent` content or the editable `client` draft and supplies contact/retention. Follent's retained settings remain active; approval flags and integration IDs were not changed. The central retention wording now uses the latest owner-confirmed reasonably-needed/CRM-up-to-seven-years/backup-expiry wording already present in the numbered draft, avoiding the old config promise of automatic deletion.
 
-Run `node docs/privacy-policy/preview.mjs`, then `node scripts/serve.mjs --dir .qa/privacy-review --port 4173`. Review `http://127.0.0.1:4173/privacy-policy/`. This separate output has disabled forms/Analytics, noindex and an empty sitemap. Do not upload it. Normal Growth output remains the brief notice with configured retention and an Analytics preference control.
+Run `node docs/privacy-policy/preview.mjs`, then `node scripts/serve.mjs --dir .qa/privacy-review --port 4173`. Review `http://127.0.0.1:4173/privacy-policy/`. The generator now builds the normal renderer directly with disabled forms/Analytics, noindex and an empty sitemap. Do not upload it. Normal Growth has the same numbered policy, configured retention/contact and Analytics preference control; preview text explicitly states disabled services.
 
 ## Confirmed facts and limits
 
