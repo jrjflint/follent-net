@@ -20,10 +20,9 @@ export function document(page, ctx) {
   const { site: s } = ctx;
   const canonical = `${s.domain}${page.slug === '404' ? '/404.html' : page.slug ? `/${page.slug}/` : '/'}`;
   const title = `${page.title} | ${s.businessName}`;
-  const nav = ctx.isEssential ? [['services', 'Services'], ['pricing', 'Pricing'], ['process', 'Process'], ['contact', 'Contact']] : [['services', 'Services'], ['pricing', 'Pricing'], ['how-it-works', 'Process'], ['about', 'About']];
-  const navLinks = nav.map(([slug, label]) => `<a href="${ctx.route(slug)}"${page.slug === slug ? ' aria-current="page"' : ''}>${label}</a>`).join('');
+  const navLinks = (ctx.navigation || []).map(item => `<a href="${e(item.href)}"${page.slug === item.slug ? ' aria-current="page"' : ''}>${e(item.label)}</a>`).join('');
   const schema = jsonScript(schemaFor(page, ctx));
-  const scripts = `<script src="/assets/js/site.js" defer></script>${page.slug === 'contact' && s.package === 'growth' && s.form.provider === 'formspark' ? '<script type="module" src="/assets/js/form.js"></script>' : ''}${ctx.formEnabled && s.form.turnstileSiteKey && page.slug === 'contact' ? '<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>' : ''}${ctx.analyticsEnabled ? '<script src="/assets/js/analytics.js" defer></script>' : ''}`;
+  const scripts = `<script src="/assets/js/site.js" defer></script>${page.enquiryForm === true && s.package === 'growth' && s.form.provider === 'formspark' ? '<script type="module" src="/assets/js/form.js"></script>' : ''}${ctx.formEnabled && s.form.turnstileSiteKey && page.enquiryForm === true ? '<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>' : ''}${ctx.analyticsEnabled ? '<script src="/assets/js/analytics.js" defer></script>' : ''}`;
   return `<!DOCTYPE html>
 <html lang="en-AU">
 <head>
@@ -63,7 +62,7 @@ ${scripts}
 <main id="main" tabindex="-1">${page.render(ctx)}</main>
 <footer class="site-footer"><div class="container"><div class="footer-main"><div><a class="wordmark" href="/" aria-label="${e(s.businessName)} home">${e(s.wordmark)}<span>.</span></a><p>${e(s.tagline)}</p><p class="small">Serving ${e(s.serviceArea)}, ${e(s.address.state)}, Australia.</p></div><div><p class="eyebrow">Explore</p><nav aria-label="Footer navigation">${navLinks}<a href="/privacy-policy/">Privacy</a></nav></div><div><p class="eyebrow">Let’s talk</p>${contactDetails(s)}${s.socialURLs.length ? `<div class="contact-links">${s.socialURLs.map((url, i) => `<a href="${e(url)}">Social profile ${i + 1}</a>`).join('')}</div>` : ''}</div></div><div class="footer-bottom"><span>© ${e(s.copyrightYear)} ${e(s.legalName || s.businessName)}${s.abn ? ` · ABN ${e(s.abn)}` : ''}</span><span>All prices AUD, ex GST.</span></div></div></footer>
 ${ctx.analyticsEnabled ? '<aside class="analytics-notice" aria-label="Analytics preference" hidden><p>Allow optional analytics to help us improve this website? <a href="/privacy-policy/">Privacy notice</a></p><div class="button-row"><button type="button" class="button" data-analytics-choice="allow">Allow analytics</button><button type="button" class="button button-secondary" data-analytics-choice="deny">Decline</button></div></aside>' : ''}
-${page.slug === 'contact' && ctx.formtrackEnabled ? '<script src="https://unpkg.com/@formspark/formtrack" async></script>' : ''}
+${page.enquiryForm === true && ctx.formtrackEnabled ? '<script src="https://unpkg.com/@formspark/formtrack" async></script>' : ''}
 </body>
 </html>`;
 }

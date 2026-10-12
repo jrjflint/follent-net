@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { document } from '../src/layouts/document.mjs';
 import { pageDefinitions } from '../src/pages/content.mjs';
 import { clientPolicyIsDraft } from '../src/pages/privacy-policy.mjs';
+import { validatePages, selectPages, navigationFor, pageRoute, validateRenderedTargets } from '../src/lib/pages.mjs';
 import { validateConfig } from '../src/lib/config.mjs';
 import { escapeHTML } from '../src/lib/html.mjs';
 
@@ -24,16 +25,24 @@ async function readConfig(filename) {
   return { site: s, configHash: createHash('sha256').update(bytes).digest('hex') };
 }
 export async function loadConfig(filename = 'config/site.json') { return (await readConfig(filename)).site; }
-export function context(site, { preview = false } = {}) {
+export function context(site, { preview = false, pages = pageDefinitions } = {}) {
   const isEssential = site.package === 'essential';
-  const route = slug => isEssential && !['privacy-policy', 'success', 'form-error', '404'].includes(slug) ? `/#${slug === 'how-it-works' ? 'process' : slug === 'about' ? 'examples' : slug}` : slug ? `/${slug}/` : '/';
-  const adapt = href => isEssential && /^\/(services|pricing|how-it-works|about|contact)\/$/.test(href) ? route(href.split('/')[1]) : href;
+  validatePages(pages);
+  const route = slug => {
+    const page = pages.find(item => item.slug === slug);
+    if (!page) throw new Error('Unknown page destination: ' + slug);
+    return pageRoute(page, site.package);
+  };
+  const adapt = href => {
+    const match = isEssential && href.match(/^\/([a-z0-9/-]+)\/$/);
+    return match ? route(match[1]) : href;
+  };
   const configured = site.form.endpoint && !/FORM_ID|PLACEHOLDER/i.test(site.form.endpoint);
   const formEnabled = Boolean(!preview && site.package === 'growth' && site.form.provider === 'formspark' && configured && site.privacy.approved && (site.privacy.contactEmail || site.email) && site.privacy.retention);
   return {
-    site, isEssential, route, preview,
+    site, isEssential, route, preview, navigation: navigationFor(pages, site.package),
     primaryHref: adapt(site.primaryCTA.href), secondaryHref: adapt(site.secondaryCTA.href),
-    contactURL: id => isEssential ? '/#contact' : `/contact/?package=${id}`,
+    contactURL: id => isEssential ? route('contact') : `${route('contact')}?package=${id}`,
     formEnabled,
     formtrackEnabled: formEnabled && site.form.formtrackEnabled === true,
     analyticsEnabled: Boolean(!preview && site.package !== 'essential' && site.analytics.measurementId)
@@ -53,14 +62,17 @@ export function headers(ctx, hashes) {
   const csp = `default-src 'self'; base-uri 'self'; object-src 'none'; script-src ${scripts.join(' ')}; style-src 'self'; font-src 'self'; img-src ${images.join(' ')}; connect-src ${connect.join(' ')}; frame-src ${frames.join(' ')}; frame-ancestors 'none'; form-action 'self'${ctx.formEnabled ? ' https://submit-form.com' : ''}; upgrade-insecure-requests`;
   return `/*\n  Content-Security-Policy: ${csp}\n  Referrer-Policy: strict-origin-when-cross-origin\n  X-Content-Type-Options: nosniff\n  X-Frame-Options: DENY\n  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()\n${ctx.preview ? '  X-Robots-Tag: noindex, nofollow\n' : ''}\n/assets/*\n  Cache-Control: public, max-age=3600\n\n/assets/fonts/*\n  Cache-Control: public, max-age=31536000, immutable\n\n/success/*\n  X-Robots-Tag: noindex\n\n/form-error/*\n  X-Robots-Tag: noindex\n`;
 }
-export async function build({ configFile = 'config/site.json', output = 'dist', preview = false, packageOverride } = {}) {
+export async function build({ configFile = 'config/site.json', output = 'dist', preview = false, packageOverride, pages = pageDefinitions } = {}) {
   const { site, configHash } = await readConfig(configFile);
   if (packageOverride) {
     if (!['essential', 'professional', 'growth'].includes(packageOverride)) throw new Error('Invalid package override');
     site.package = packageOverride;
   }
   const configSource = path.relative(root, configPath(configFile)).split(path.sep).join('/');
-  const ctx = context(site, { preview });
+  const ctx = context(site, { preview, pages });
+  const selected = selectPages(pages, site.package);
+  const rendered = selected.map(page => ({ page, html: document(page, ctx) }));
+  validateRenderedTargets(pages, site.package, rendered, ctx);
   const out = path.resolve(root, output);
   // Never delete source or a computed path outside the designated generated trees.
   const rel = path.relative(root, out);
@@ -69,10 +81,8 @@ export async function build({ configFile = 'config/site.json', output = 'dist', 
   await mkdir(out, { recursive: true });
   await cp(path.join(root, 'assets'), path.join(out, 'assets'), { recursive: true });
   await writeFile(path.join(out, 'assets/css/brand.css'), `:root{--ivory:${site.brand.ivory};--noir:${site.brand.noir};--bordeaux:${site.brand.bordeaux}}\n`);
-  const selected = pageDefinitions.filter(p => !ctx.isEssential || ['', 'privacy-policy', '404'].includes(p.slug));
   const hashes = new Set();
-  for (const page of selected) {
-    const html = document(page, ctx);
+  for (const { page, html } of rendered) {
     for (const m of html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) hashes.add(`'sha256-${createHash('sha256').update(m[1]).digest('base64')}'`);
     const filename = page.slug === '404' ? path.join(out, '404.html') : path.join(out, page.slug, 'index.html');
     await mkdir(path.dirname(filename), { recursive: true });

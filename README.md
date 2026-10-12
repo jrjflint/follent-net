@@ -29,6 +29,7 @@ src/partials/components.mjs   Shared content components
 src/partials/follent-commercial.mjs  Business-specific sections with explicit offer inputs
 src/layouts/document.mjs      Head, navigation, footer and structured data
 src/lib/html.mjs              Escaping and URL helpers
+src/lib/pages.mjs             Manifest validation, package selection, navigation and route targets
 assets/                      Local CSS, JS, fonts, icons and social image
 scripts/build.mjs            Dependency-free static generation
 scripts/serve.mjs            Local preview with generated security headers
@@ -57,6 +58,8 @@ Business identity, domain, contact links, CTAs, location, analytics and form set
 The source content sells Follent services. When cloning for a tradesperson, consultant or other business, replace the service/pricing copy and modules rather than publishing Follent offers as their own. Page capacity is a commercial scope limit, not an automatic page generator. See [CLIENT_SETUP.md](CLIENT_SETUP.md).
 
 Generic buttons, section introductions and contact helpers live in `components.mjs` without commercial data imports. Follent cards/managed plans/add-ons/process/FAQ/closing copy live in `follent-commercial.mjs`; the page layer passes the required catalogue arrays explicitly. Another business can use the generic document/helpers without loading Follent offers/projects. Page composition remains ordinary template literals grouped by section, not a content framework.
+
+`pageDefinitions` is the page/navigation manifest: each page declares `packages`, optional `navigation: { order, packages }`, optional `essentialSection`, `utility` and `enquiryForm` along with its existing slug/metadata/render function. Navigation and package selection derive from this data. Enquiry-script placement follows `enquiryForm`, not a Contact slug check. `context(site, { pages })` and `build({ pages })` accept a client manifest without engine edits. Root Home, `/privacy-policy/` and `/404.html` remain required; active native forms need enquiry, success and form-error pages. Manifest and rendered section/CTA targets are checked before output replacement. Changing pages still requires adapting copy/CTA links and reviewing the commercial page allowance; utility output is preserved rather than silently removed.
 
 Start new clients from `config/client.example.json`, not Follent's active `site.json`. For a disposable safe preview: `node scripts/build.mjs --config config/client.example.json --out .qa/client-example --preview`, then `node scripts/check.mjs --dir .qa/client-example`. Empty integrations/approval flags stay disabled even in normal builds. The example's visible placeholders, inherited service copy and branding must be replaced before launch.
 

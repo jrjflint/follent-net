@@ -35,6 +35,7 @@ The existing architecture is approved: **Node 22+ at build time, dependency-free
 | `src/layouts/document.mjs` | Document head, navigation, footer, metadata and business/breadcrumb schema |
 | `src/lib/html.mjs` | Escaping, JSON-LD serialisation and URL helpers |
 | `src/lib/config.mjs` | Explicit public config checks before output replacement |
+| `src/lib/pages.mjs` | Page manifest validation, package selection, navigation and route/section checks |
 | `assets/` | CSS, small browser scripts, self-hosted fonts/licences, icons and images |
 | `scripts/build.mjs` | Configuration validation, package selection and static generation |
 | `scripts/serve.mjs`, `scripts/check.mjs` | Local preview and generated-output/launch checks |

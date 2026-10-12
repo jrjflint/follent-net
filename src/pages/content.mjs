@@ -78,15 +78,17 @@ export function formError(ctx) {
 export function notFound(ctx) {
   return `${hero('404 / Page not found', 'Let’s get you back on track.', 'This page may have moved, or the address may be incorrect.')}<section class="section"><div class="container button-row">${button('/', 'Return home')}${button(ctx.secondaryHref, 'View packages', true)}</div></section>`;
 }
+const allPackages = ['essential', 'professional', 'growth'];
+const multiPagePackages = ['professional', 'growth'];
 export const pageDefinitions = [
-  { slug: '', nav: 'Home', title: 'Professional websites for small businesses', description: 'Professional website design for small businesses. Clear packages, human-reviewed copy and optional managed lead capture.', render: home },
-  { slug: 'services', nav: 'Services', title: 'Website services', description: 'Responsive website design, professional copywriting, local SEO foundations and optional lead capture for small businesses.', render: services },
-  { slug: 'pricing', nav: 'Pricing', title: 'Website packages & pricing', description: `${packages.map(p => `${p.name} $${p.price.toLocaleString('en-AU')}`).join(', ')} ex GST. Compare website packages, add-ons and managed lead capture.`, render: pricing },
-  { slug: 'how-it-works', nav: 'Process', title: 'How your website project works', description: 'From discovery and a clear scope to design, review and launch. A straightforward process for your new business website.', render: howItWorks },
-  { slug: 'about', nav: 'About', title: 'A considered approach to websites', description: 'Practical website strategy, professional design and reliable delivery. Learn about the approach behind our small-business websites.', render: about },
-  { slug: 'contact', nav: 'Contact', title: 'Start your website project', description: 'Tell us about your business and website project. Discuss professional website design, lead capture and automation.', render: contact },
-  { slug: 'privacy-policy', nav: 'Privacy', title: 'Privacy Policy', description: 'How website enquiries, contact details and optional analytics are handled.', render: privacy },
-  { slug: 'success', nav: 'Enquiry submitted', title: 'Enquiry submitted', description: 'The next step after submitting a website project enquiry.', noindex: true, render: success },
-  { slug: 'form-error', nav: 'Submission problem', title: 'Enquiry submission problem', description: 'Help when a website enquiry cannot be confirmed.', noindex: true, render: formError },
-  { slug: '404', nav: 'Page not found', title: 'Page not found', description: 'Find your way back to the website.', noindex: true, render: notFound }
+  { slug: '', packages: allPackages, nav: 'Home', title: 'Professional websites for small businesses', description: 'Professional website design for small businesses. Clear packages, human-reviewed copy and optional managed lead capture.', render: home },
+  { slug: 'services', packages: multiPagePackages, essentialSection: 'services', navigation: { order: 10, packages: allPackages }, nav: 'Services', title: 'Website services', description: 'Responsive website design, professional copywriting, local SEO foundations and optional lead capture for small businesses.', render: services },
+  { slug: 'pricing', packages: multiPagePackages, essentialSection: 'pricing', navigation: { order: 20, packages: allPackages }, nav: 'Pricing', title: 'Website packages & pricing', description: `${packages.map(p => `${p.name} $${p.price.toLocaleString('en-AU')}`).join(', ')} ex GST. Compare website packages, add-ons and managed lead capture.`, render: pricing },
+  { slug: 'how-it-works', packages: multiPagePackages, essentialSection: 'process', navigation: { order: 30, packages: allPackages }, nav: 'Process', title: 'How your website project works', description: 'From discovery and a clear scope to design, review and launch. A straightforward process for your new business website.', render: howItWorks },
+  { slug: 'about', packages: multiPagePackages, essentialSection: 'examples', navigation: { order: 40, packages: multiPagePackages }, nav: 'About', title: 'A considered approach to websites', description: 'Practical website strategy, professional design and reliable delivery. Learn about the approach behind our small-business websites.', render: about },
+  { slug: 'contact', packages: multiPagePackages, essentialSection: 'contact', navigation: { order: 40, packages: ['essential'] }, enquiryForm: true, nav: 'Contact', title: 'Start your website project', description: 'Tell us about your business and website project. Discuss professional website design, lead capture and automation.', render: contact },
+  { slug: 'privacy-policy', packages: allPackages, utility: true, nav: 'Privacy', title: 'Privacy Policy', description: 'How website enquiries, contact details and optional analytics are handled.', render: privacy },
+  { slug: 'success', packages: multiPagePackages, utility: true, nav: 'Enquiry submitted', title: 'Enquiry submitted', description: 'The next step after submitting a website project enquiry.', noindex: true, render: success },
+  { slug: 'form-error', packages: multiPagePackages, utility: true, nav: 'Submission problem', title: 'Enquiry submission problem', description: 'Help when a website enquiry cannot be confirmed.', noindex: true, render: formError },
+  { slug: '404', packages: allPackages, utility: true, nav: 'Page not found', title: 'Page not found', description: 'Find your way back to the website.', noindex: true, render: notFound }
 ];

@@ -42,6 +42,10 @@ Keep button/intro/contact helpers generic. Move cards, managed plans, scope note
 
 ## T04 — Central page/navigation manifest
 
+Implementation declares packages, navigation order/packages, Essential sections, utility status and enquiry-script metadata in pageDefinitions. Build/context accept an explicit pages array. Shared helpers derive selection/navigation/routes; all page rendering and section/CTA checks happen before output deletion. Required Home/privacy/404 and active-form success/error routes preserve the current utility contract.
+
+**Completed 12 October 2026.** Seventeen Node tests pass, including different-business page addition/removal, all-package link/fragment checks, invalid/duplicate/traversal manifests, missing sections/CTA targets and preserved previous output. Enquiry scripts follow metadata on a renamed fixture page. Normal build/check, reference package checks and docs pass. All 23 reference HTML files remain byte-identical; no browser/artwork regeneration or config/asset changes were needed. Remote push verification is the completion checkpoint.
+
 **P1 · ENGINE + FOLLENT · F4 · Dependencies: T03**
 
 Extend existing definitions with navigation placement/order, supported packages and Essential section destination. Derive selection/navigation/aliases rather than maintaining separate lists. Validate unique safe slugs, render functions and resolvable nav/section targets before writes. Preserve current utility output initially, including Professional success/error pages; changing that requires separate scope approval.
