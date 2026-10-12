@@ -7,7 +7,7 @@ import { build, loadConfig, context } from '../scripts/build.mjs';
 test('client example never inherits reference integrations or review approvals', async () => {
   const site = await loadConfig('config/client.example.json');
   const reference = await loadConfig();
-  assert.deepEqual(site.analytics, { measurementId: '', searchConsoleVerification: '' });
+  assert.deepEqual(site.analytics, { measurementId: '', tagManagerId: '', searchConsoleVerification: '' });
   assert.deepEqual(site.privacy, { approved: false, contactEmail: '', retention: '', policy: 'client' });
   assert.deepEqual(site.launch, { migrationReviewed: false, businessDetailsReviewed: false });
   assert.deepEqual(site.redirects, []);

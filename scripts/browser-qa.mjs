@@ -167,6 +167,7 @@ try {
       await ctx.close();
     }
     fixture.analytics.measurementId = 'G-QATEST1';
+    fixture.analytics.tagManagerId = 'GTM-QATEST1';
     await writeFile(path.join(root, '.qa/analytics-config.json'), JSON.stringify(fixture));
     await build({ configFile: '.qa/analytics-config.json', output: '.qa/analytics' });
     const analyticsBase = await server('.qa/analytics', 4177);
@@ -182,12 +183,36 @@ try {
     await analyticsPage.getByRole('button', { name: 'Allow analytics' }).click();
     await analyticsPage.waitForFunction(() => window.qaAnalyticsLoaded);
     assert.equal(analyticsRequests, 1);
-    const gaConfig = await analyticsPage.evaluate(() => Array.from(window.dataLayer).map(x => Array.from(x)).find(x => x[0] === 'config')[2]);
+    const gaConfig = await analyticsPage.evaluate(() => window.dataLayer.find(x => x.event === 'gtm.js'));
     assert.equal(gaConfig.page_location, analyticsBase + '/privacy-policy/');
+    assert.equal(gaConfig.page_location.includes('privateQuery'), false);
+    assert.ok(!await analyticsPage.evaluate(() => Array.from(window.dataLayer).some(x => x[0] === 'config')), 'No duplicate direct GA loader');
     await analyticsPage.evaluate(() => window.siteTrack('generate_lead', { package: 'growth' }));
-    const event = await analyticsPage.evaluate(() => Array.from(window.dataLayer).map(x => Array.from(x)).find(x => x[0] === 'event'));
-    assert.deepEqual(event, ['event', 'generate_lead', { package: 'growth' }]);
-    results.behaviours.push('Mocked analytics: no request before opt-in or after decline; allow loads GA, query strings omitted, conversion payload excludes personal data.');
+    const event = await analyticsPage.evaluate(() => { const x = window.dataLayer.find(x => x.event === 'generate_lead'); return { event: x.event, package: x.package }; });
+    assert.deepEqual(event, { event: 'generate_lead', package: 'growth' });
+    let acceptedEvents = 0;
+    analyticsPage.on('console', message => { if (message.text() === 'QA_ACCEPTED_LEAD') acceptedEvents++; });
+    await analyticsPage.addInitScript(() => {
+      document.addEventListener('DOMContentLoaded', () => {
+        const push = window.dataLayer.push.bind(window.dataLayer);
+        window.dataLayer.push = entry => { if (entry.event === 'generate_lead') console.log('QA_ACCEPTED_LEAD'); return push(entry); };
+      });
+    });
+    let acceptSubmission = false;
+    await analyticsPage.route('https://submit-form.com/**', route => route.fulfill({ status: acceptSubmission ? 200 : 500, contentType: 'application/json', body: '{}' }));
+    await analyticsPage.goto(analyticsBase + '/contact/?package=growth');
+    await analyticsPage.locator('#name').fill('Synthetic GTM QA');
+    await analyticsPage.locator('#email').fill('qa@example.com');
+    await analyticsPage.locator('#message').fill('Local intercepted test only');
+    await analyticsPage.locator('#consent').check();
+    await analyticsPage.getByRole('button', { name: 'Send your enquiry' }).click();
+    await analyticsPage.locator('#form-status').filter({ hasText: 'We could not confirm' }).waitFor();
+    assert.equal(acceptedEvents, 0, 'Failed submissions never emit a conversion');
+    acceptSubmission = true;
+    await analyticsPage.getByRole('button', { name: 'Send your enquiry' }).click();
+    await analyticsPage.waitForURL('**/success/');
+    assert.equal(acceptedEvents, 1, 'One accepted submission emits one conversion before redirect');
+    results.behaviours.push('Mocked GTM: consent gate, no direct GA loader, sanitised page data, failure emits zero leads, acceptance emits one lead and redirects with bounded tracking wait.');
     await analyticsContext.close();
     }
     assert.equal(results.errors.length, 0, 'Browser script errors');

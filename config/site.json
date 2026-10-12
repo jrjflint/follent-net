@@ -17,7 +17,7 @@
   "bookingURL": "",
   "googleBusinessProfileURL": "",
   "socialURLs": [],
-  "analytics": { "measurementId": "G-K54S78JQ7L", "searchConsoleVerification": "" },
+  "analytics": { "measurementId": "G-K54S78JQ7L", "tagManagerId": "GTM-5F9LKZC", "searchConsoleVerification": "" },
   "form": { "provider": "formspark", "endpoint": "https://submit-form.com/aHeuOMHHg", "formtrackEnabled": true, "turnstileSiteKey": "", "externalURL": "" },
   "brand": { "ivory": "#F2F0EA", "noir": "#0A0A0C", "bordeaux": "#4A002E" },
   "copyrightYear": 2026,

@@ -1,5 +1,13 @@
 # QA report — 9 October 2026
 
+## GTM and accepted-enquiry tracking — 12 October 2026
+
+GTM `GTM-5F9LKZC` now replaces direct GA loading in Follent's normal builds, with the existing opt-in/DNT/GPC and preview/package containment. The local external head loader replaces the unconditional snippet; no noscript iframe bypasses consent. The privacy disclosure and client reset instructions include GTM. Dashboard tags/key-event settings and live collection are not configured or verified by this source change; see [setup steps](docs/analytics/GTM_SETUP.md).
+
+Verification: 27 Node tests pass; normal build, generated-output checks, all three reference package checks, HTML validation and documentation checks pass. Reference and gardening browser QA pass 40 and 32 responsive combinations respectively, with zero axe violations and no browser script errors. Intercepted Google/Formspark tests confirm no Google request before opt-in/after decline, one GTM loader, sanitised URL variables, zero conversions on provider failure, one accepted-submission conversion before redirect, and bounded fallback when the mocked tag does not invoke its callback. Unit tests cover DNT/GPC, saved consent, callback/timeout and direct GA fallback. Source artwork is preserved. No real provider submission, Google event receipt or container publication is claimed.
+
+Local Lighthouse 13.5.0, default mobile settings and no analytics consent: Home 99/100/100/100 and Contact 100/100/100/100 (Performance/Accessibility/Best Practices/SEO). These measurements do not include a live opted-in container or predict its tag costs. Ignored evidence: `.qa/browser-results.json`, `.qa/browser-garden-results.json`, `.qa/lighthouse-home.json`, `.qa/lighthouse-contact.json`. Earlier dated reports below retain their historical scope.
+
 ## Observed results
 
 The website was tested locally in headless Google Chrome on Windows, using Node 24.14.1. The project supports Node 22+. These results cover the supplied preview configuration, with analytics and live enquiries disabled. They do not certify a future deployment or third-party service delivery.

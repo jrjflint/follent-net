@@ -54,6 +54,7 @@ export function validateConfig(site) {
   if (site.form.externalURL) { url(site.form.externalURL, 'form.externalURL'); if (!/^https:\/\//.test(site.form.externalURL)) throw new Error('External forms require HTTPS'); }
   for (const key of ['measurementId', 'searchConsoleVerification']) string(site.analytics[key], `analytics.${key}`);
   if (site.analytics.measurementId && !/^G-[A-Z0-9]+$/.test(site.analytics.measurementId)) throw new Error('Use a valid GA4 measurement ID');
+  if (site.analytics.tagManagerId !== undefined && (typeof site.analytics.tagManagerId !== 'string' || (site.analytics.tagManagerId && !/^GTM-[A-Z0-9]+$/.test(site.analytics.tagManagerId)))) throw new Error('Use a valid GTM container ID');
   for (const key of ['approved']) boolean(site.privacy[key], `privacy.${key}`);
   for (const key of ['contactEmail', 'retention']) string(site.privacy[key], `privacy.${key}`);
   for (const [value, key] of [[site.email, 'email'], [site.privacy.contactEmail, 'privacy.contactEmail']]) {

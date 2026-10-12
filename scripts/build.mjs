@@ -45,7 +45,7 @@ export function context(site, { preview = false, pages = pageDefinitions } = {})
     contactURL: id => isEssential ? route('contact') : `${route('contact')}?package=${id}`,
     formEnabled,
     formtrackEnabled: formEnabled && site.form.formtrackEnabled === true,
-    analyticsEnabled: Boolean(!preview && site.package !== 'essential' && site.analytics.measurementId)
+    analyticsEnabled: Boolean(!preview && site.package !== 'essential' && (site.analytics.tagManagerId || site.analytics.measurementId))
   };
 }
 export function headers(ctx, hashes) {

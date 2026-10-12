@@ -22,11 +22,12 @@ export function document(page, ctx) {
   const title = `${page.title} | ${s.businessName}`;
   const navLinks = (ctx.navigation || []).map(item => `<a href="${e(item.href)}"${page.slug === item.slug ? ' aria-current="page"' : ''}>${e(item.label)}</a>`).join('');
   const schema = jsonScript(schemaFor(page, ctx));
-  const scripts = `<script src="/assets/js/site.js" defer></script>${page.enquiryForm === true && s.package === 'growth' && s.form.provider === 'formspark' ? '<script type="module" src="/assets/js/form.js"></script>' : ''}${ctx.formEnabled && s.form.turnstileSiteKey && page.enquiryForm === true ? '<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>' : ''}${ctx.analyticsEnabled ? '<script src="/assets/js/analytics.js" defer></script>' : ''}`;
+  const scripts = `<script src="/assets/js/site.js" defer></script>${page.enquiryForm === true && s.package === 'growth' && s.form.provider === 'formspark' ? '<script type="module" src="/assets/js/form.js"></script>' : ''}${ctx.formEnabled && s.form.turnstileSiteKey && page.enquiryForm === true ? '<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>' : ''}`;
   return `<!DOCTYPE html>
 <html lang="en-AU">
 <head>
 <meta charset="utf-8">
+${ctx.analyticsEnabled ? `<script src="/assets/js/analytics.js" data-analytics-id="${e(s.analytics.measurementId)}" data-tag-manager-id="${e(s.analytics.tagManagerId || '')}"></script>` : ''}
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${e(title)}</title>
 <meta name="description" content="${e(page.description)}">

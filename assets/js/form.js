@@ -39,7 +39,11 @@ if (form) {
       const analyticsField = form.dataset.analyticsField ? form.elements.namedItem(form.dataset.analyticsField) : null;
       const submittedSelection = analyticsField ? data[analyticsField.name] : '';
       const selection = analyticsField instanceof HTMLSelectElement && Array.from(analyticsField.options).some(option => option.value === submittedSelection) ? submittedSelection : '';
-      if (typeof window.siteTrack === 'function') window.siteTrack('generate_lead', { package: selection || 'unspecified' });
+      // Give the optional tag time to dispatch before navigation. Tracking failure
+      // must never turn an accepted enquiry into a submission error.
+      try {
+        if (typeof window.siteTrack === 'function') await window.siteTrack('generate_lead', { package: selection || 'unspecified' });
+      } catch { /* The enquiry was accepted even if analytics is unavailable. */ }
       location.assign(form.dataset.success);
     } catch {
       status.textContent = 'We could not confirm your enquiry was received. Your details are still here. Check your connection and try again, or use a contact link. A retry may send a duplicate if the connection dropped after delivery.';
