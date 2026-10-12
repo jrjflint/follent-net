@@ -4,7 +4,7 @@ Reviewed 12 October 2026 against commit `a6937e9` and a clean starting working t
 
 Retain the static, dependency-free architecture. The main obstacle is the boundary between reusable rendering and Follent business composition, rather than missing framework features.
 
-This report records pre-implementation observations. Consult TASKS.md for current status: T01 supplies safe client configuration and T02 resolves the two privacy paths, with client scaffold protections. Historical findings below explain those changes; they are not claims that completed defects remain present.
+This report records pre-implementation observations. Consult TASKS.md for current status and verification of implemented fixes, including safe config, unified privacy, commercial/module boundaries, manifest, schema, provenance, QA and intake. Historical findings below explain those changes; they are not claims that completed defects remain present. T10 adds the maintained `npm run check:docs` command; the final paragraph's proposed-command wording records the original review state.
 
 ## Current dependencies
 

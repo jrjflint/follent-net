@@ -133,6 +133,7 @@ For implementation/content changes, run the existing commands from the repositor
 npm test
 npm run build
 npm run check
+npm run check:docs
 ```
 
 Use `npm run preview` for local review at **http://127.0.0.1:4173**. For package-sensitive changes, check generated variants with `node scripts/check.mjs --dir .qa/essential` (and `.qa/professional`, `.qa/growth`); `npm test` creates those test builds.

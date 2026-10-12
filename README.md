@@ -13,6 +13,10 @@ npm run preview
 
 Open http://127.0.0.1:4173. Stop the server with Ctrl+C. Run `npm test` for package-boundary and form-transport checks, `npm run check` for generated link/metadata checks, and `npm run check:launch` for business setup prerequisites.
 
+Run `npm run check:docs` after documentation changes. The dependency-free checker reads repository Markdown (including reports), checks inline/reference local links, simple ATX heading/explicit-ID fragments and `npm run` script references, including commands in fenced examples. It skips external URLs and ignored `.qa`, `dist` and `node_modules` artifact targets; dated report summaries remain available without those artifacts. It does not validate external availability, platform/account settings, arbitrary Markdown extensions or historical command behaviour. Human review still reconciles operational facts and instructions.
+
+README owns engine commands, configuration and hosting procedures; [CLIENT_SETUP.md](CLIENT_SETUP.md) owns the clone workflow; [AGENTS.md](AGENTS.md) owns engineering constraints; [LAUNCH_CHECKLIST.md](LAUNCH_CHECKLIST.md) records manual launch decisions. AI_CLIENT_BUILD_PROMPT points to those instructions. QA_REPORT and specialist reports retain dated evidence; consult task status for fixes rather than treating historical findings as current defects.
+
 **Recorded implementation state:** owner-approved form activation and retention were recorded on 9 October 2026. Source configuration still enables Formspark and optional GA4 in normal Growth builds; previews disable collection/tracking. General contact details, Search Console and migration/business launch flags remain incomplete in the repository. [Isolated synthetic testing](docs/form-e2e/REPORT.md) recorded enhanced/native storage and owner-confirmed inbox receipt. These are dated observations, not verification of current deployed-origin collection or production cutover. This review made no DNS or hosting changes.
 
 **T02 implementation, 12 October 2026:** `/privacy-policy/` now uses `src/pages/privacy-policy.mjs` in normal and review builds. Explicit `privacy.policy: "follent"` selects Follent's numbered content; `"client"` (also the omitted-field default) selects the client draft. The Follent selection is rejected for a different business/domain. The client scaffold cannot be approved until replaced in its content module. Contact/retention come from config, and preview text follows disabled capabilities. Earlier integration claims were corrected before this implementation; no deployed commit or dashboard setting is verified by this change. See [privacy review](docs/privacy-policy/REVIEW.md).
@@ -24,7 +28,7 @@ config/site.json             Shared business, brand and integration configuratio
 src/data/offers.mjs           Packages, recurring plans, add-ons, process and FAQs
 src/data/projects.mjs         Verified portfolio entries
 src/data/enquiry.mjs          Follent intake labels, fields and select choices
-src/pages/content.mjs         Page content and form markup
+src/pages/content.mjs         Page content, manifest and form composition
 src/pages/privacy-policy.mjs  Shared policy entry, Follent content and editable client draft
 src/partials/components.mjs   Shared content components
 src/partials/follent-commercial.mjs  Business-specific sections with explicit offer inputs

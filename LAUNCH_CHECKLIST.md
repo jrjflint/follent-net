@@ -11,7 +11,7 @@
 - [ ] Confirm success and failure paths, invalid inputs, keyboard operation and native submission without JavaScript where no optional challenge is required.
 - [ ] Review optional analytics consent and successful-submission conversion tracking; configure Search Console.
 - [ ] Inventory and back up the existing site; approve URL mappings. Do not retire WordPress yet.
-- [ ] Run build, tests, generated checks and launch check; validate HTML and JSON-LD.
+- [ ] Run build, tests, generated checks, `npm run check:docs` and launch check; validate HTML and JSON-LD. Follow README for authoritative commands/hosting and CLIENT_SETUP for cloning; dated reports do not prove current deployment state.
 - [ ] Review all pages at phone, tablet and desktop sizes, navigation without JavaScript, contrast, focus, touch targets, reduced motion and alt text.
 - [ ] Check unique titles/descriptions, canonical URLs, social image, sitemap, robots and pricing consistency.
 - [ ] Measure Lighthouse performance/accessibility/best-practices/SEO; investigate scores below 95.

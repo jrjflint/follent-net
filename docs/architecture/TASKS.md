@@ -108,6 +108,10 @@ Extract stable consent/spam/redirect/status controls from website-service intake
 
 ## T10 — Documentation consistency check
 
+Implementation adds scripts/check-docs.mjs and `npm run check:docs`, checks local inline/reference links and simple heading/explicit-ID fragments, and verifies npm script names in executable examples. External URLs and ignored artifact links are excluded; reports remain dated evidence. Authoritative responsibilities are linked from guides and launch instructions, and superseded Contact/privacy findings are labelled rather than rewritten as past successes. No automatic scraping or documentation rewriting.
+
+**Completed 12 October 2026.** Twenty-four Node tests pass, including valid encoded/space/Unicode paths, repeated-heading fragments, explicit IDs, reference links, ignored artifacts and CLI success; missing path/fragment/script/reference and outside-repository links cause CLI failure. Normal build/check and reference package checks pass. Repository documentation checks pass with zero failures. No rendered site, business settings, tracked artwork or historical measurements changed; browser/Lighthouse reruns were unnecessary for this documentation/tooling task. Remote push verification is the completion checkpoint.
+
 **P2 · ENGINE + FOLLENT · F10 · Dependencies: none; extend after T02/T07/T08**
 
 Add dependency-free relative Markdown path/fragment and npm-command checks, excluding external links and ignored evidence appropriately. Keep README authoritative for engine/hosting, CLIENT_SETUP for cloning, AGENTS for constraints, checklist for manual launch and reports for dated evidence. Link official platform guidance with review dates; no automatic scraping/rewriting.

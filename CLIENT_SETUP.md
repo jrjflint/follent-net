@@ -64,6 +64,7 @@ Follow [README's Cloudflare Pages instructions](README.md#cloudflare-pages-deplo
 npm run build
 npm test
 npm run check
+npm run check:docs
 npm run check:launch
 npm run preview
 ```

@@ -55,4 +55,4 @@ Six Node tests pass; build produces ten pages, output checks report zero failure
 
 Local evidence: `.qa/privacy-policy-results.json`, `.qa/browser-results.json`, `.qa/screenshots/privacy-policy-*.png`, `.qa/privacy-policy-print.pdf`. Automated checks do not establish legal compliance, deployed delivery, real-device/screen-reader behaviour or adoption of the proposed operational commitments. No deployment, launch, DNS change or new integration activation was performed.
 
-Privacy-page HTML validation passes. Full-site HTML validation reports one Contact-page `unique-landmark` issue, separate from this policy revision. Mobile and print screenshots were inspected.
+Privacy-page HTML validation passes. Full-site HTML validation reports one Contact-page `unique-landmark` issue, separate from this policy revision. Mobile and print screenshots were inspected. **Superseded by T09, 12 October 2026:** the Contact sidebar now has an accessible name and normal Contact HTML validation passes; the earlier policy-revision result remains historical evidence.

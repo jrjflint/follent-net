@@ -32,7 +32,7 @@ Customise this static website reference template for the client below. Inspect t
 5. Keep provider transport separate from presentation. Do not add a database, ecommerce, heavy framework or automation-platform dependency without a concrete approved need. Never commit secrets or credentials.
 6. Use factual proof only. Mark missing details and request human review of business claims, scope and privacy. Do not set approval flags on behalf of the client.
 7. Prepare reviewed redirects, deployment instructions and the launch checklist. Do not change DNS, replace the existing live site or publish production before authorised cutover.
-8. Run the appropriate tests, link/metadata checks, browser layout checks, form success/failure tests and Lighthouse/accessibility review. Report observed results and remaining blockers honestly.
+8. Run the appropriate tests, link/metadata checks, `npm run check:docs`, browser layout checks, form success/failure tests and Lighthouse/accessibility review. Use README for current commands/hosting, CLIENT_SETUP for cloning and LAUNCH_CHECKLIST for human launch decisions; keep dated evidence separate from current deployment claims. Report observed results and remaining blockers honestly.
 
 Deliver the customised source, generated preview, changed configuration summary, test evidence and outstanding human decisions. The client must approve factual copy, design, privacy and migration before launch.
 
