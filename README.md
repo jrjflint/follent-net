@@ -53,6 +53,8 @@ Business identity, domain, contact links, CTAs, location, analytics and form set
 
 The source content sells Follent services. When cloning for a tradesperson, consultant or other business, replace the service/pricing copy and modules rather than publishing Follent offers as their own. Page capacity is a commercial scope limit, not an automatic page generator. See [CLIENT_SETUP.md](CLIENT_SETUP.md).
 
+Start new clients from `config/client.example.json`, not Follent's active `site.json`. For a disposable safe preview: `node scripts/build.mjs --config config/client.example.json --out .qa/client-example --preview`, then `node scripts/check.mjs --dir .qa/client-example`. Empty integrations/approval flags stay disabled even in normal builds. The example's visible placeholders, inherited service copy and branding must be replaced before launch.
+
 The [12 October architecture review](docs/architecture/REVIEW.md) maps reusable/business boundaries and disposable clone results. Its [prioritised task backlog](docs/architecture/TASKS.md) records proposed changes, not existing capabilities. Follow CLIENT_SETUP's safe reset before building a new client; copied Follent approval, endpoint and Google IDs remain active unless reset.
 
 All commercial values are AUD, ex GST. Essential support defaults to **14 days**, Professional to **30 days**, Growth to **90 days**. Growth includes up to **eight pages** and **one initial workflow/integration**; Lead Automation manages up to **two agreed workflows**. The monthly form service is separate from the website build. Third-party costs and usage allowances need confirmation in each proposal. The site does not provision integrations or monthly monitoring automatically.

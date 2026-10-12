@@ -2,11 +2,11 @@
 
 ## 1. Duplicate and decide the package
 
-Duplicate the repository into the client's own GitHub repository. Rename it, keep `main` as the production branch and remove the original remote if copying a local checkout. Use Node 22+.
+Duplicate the repository into the client's own GitHub repository. Rename it, keep `main` as the production branch and remove the original remote if copying a local checkout. Use Node 22+. Before building, copy `config/client.example.json` over `config/site.json`, or into a client config selected with `--config`. The example has no active integrations or approvals; its `.example` domain and visible preview labels are placeholders, never production facts.
 
 Set `package` in `config/site.json` to `essential`, `professional` or `growth`. Essential emits one scrolling main page; Professional/Growth emit the six core pages. Privacy and 404 are utility pages; Growth also uses the success/error experience. The five/eight-page commercial allowance is for agreed main content pages; trim or add entries in `pageDefinitions` to match the client's signed scope. Do not carry a six-page reference implementation into a five-page client agreement without adjusting it.
 
-**Before any client build:** Follent's copied config contains active integrations and privacy approval. Reset `form.endpoint`, `form.turnstileSiteKey`, `form.externalURL`, both Google IDs, retention and redirects to empty; set Formtrack and all privacy/launch review flags false. Replace the privacy contact, legal identity, ABN, contacts and domain with verified client values. Build with `--preview` until review is complete. Never serve an identity-only copy with Follent's endpoint or Analytics ID. A safe starting config is proposed in [T01](docs/architecture/TASKS.md#t01--safe-client-starting-configuration), not yet implemented.
+**Before any client build:** use the client example rather than Follent's active config. Verify endpoint/site key/external URL, both Google IDs, retention and redirects are empty and Formtrack/privacy/launch flags are false. Replace privacy contact, legal identity, ABN, contacts and domain with verified client values. Build with `--preview` until review is complete. Never serve an identity-only copy with Follent's endpoint or Analytics ID. Example configuration is only a safe starting point: it does not replace Follent copy, offers, assets or provider disclosures.
 
 Professional and Growth currently generate ten total pages, including success/error utilities in both. Essential generates three. These observed counts are reference output, not client page allowances; see [T04](docs/architecture/TASKS.md#t04--central-pagenavigation-manifest).
 

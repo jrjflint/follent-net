@@ -1,12 +1,14 @@
 # Template improvement backlog
 
-Created 12 October 2026. All tasks are **open**; this review implemented documentation corrections only. Finding IDs refer to [REVIEW.md](REVIEW.md). P0 addresses unsafe cloning/operational instructions; P1 recurring reuse obstacles; P2 maintenance. No task authorises publication, DNS changes or live submissions.
+Created 12 October 2026. Task status and verification appear under each item; unmarked tasks remain **open**. Finding IDs refer to [REVIEW.md](REVIEW.md). P0 addresses unsafe cloning/operational instructions; P1 recurring reuse obstacles; P2 maintenance. No task authorises publication, DNS changes or live submissions.
 
 Execution instruction, 12 October: the owner authorised deferring Cloudflare branch-build verification and T07 until the end. Work proceeds on `improvements/template-reuse`, with a verified commit/push between tasks. Revised order: T01 → T02 → T06 → T03 → T04 → T05 → T08 → T09 → T10 → T07. Pushes are authorised despite unverified Cloudflare branch behaviour; this is not evidence of safe hosted preview settings or permission to change hosting/DNS.
 
 Every code task must run `npm test`, `npm run build`, `npm run check`, relevant package-output checks and regression tests for its actual failure. Preserve URLs/pricing/package boundaries, security/consent and native form transport. Update docs alongside implementation. Browser checks must mock submissions; use T08's non-writing mode once implemented.
 
 ## T01 — Safe client starting configuration
+
+**Completed 12 October 2026.** Added the safe example and six normal/preview package builds in regression coverage. Seven Node tests pass; normal build/check, all reference package checks, example preview/output check and documentation checks pass. Follent config remains unchanged. Example content/pricing/assets still require adaptation; safe configuration does not approve publication. Remote push verification is the completion checkpoint for this task commit.
 
 **P0 · ENGINE + FOLLENT · F1 · Dependencies: none**
 
