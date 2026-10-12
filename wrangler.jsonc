@@ -4,7 +4,7 @@
   "send_metrics": false,
   "workers_dev": true,
   "preview_urls": false,
-  "routes": [{ "pattern": "dev.follent.net", "custom_domain": true }],
+  "routes": [{ "pattern": "dev.follent.net", "custom_domain": true, "previews_enabled": true }],
   "previews": {},
   "observability": { "enabled": true },
   "assets": {
