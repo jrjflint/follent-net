@@ -5,3 +5,13 @@ node_modules/
 .env*
 !.env.example
 *.log
+
+# Cloudflare local secrets
+.dev.vars*
+!.dev.vars.example
+
+# Private credentials and key exports
+/secrets/
+*.key
+*.p12
+*.pfx
