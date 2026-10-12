@@ -76,6 +76,8 @@ Validate required groups with readable field errors, review flags as booleans, p
 
 ## T07 — Reproducible Workers deployment
 
+**Completed locally, 12 October 2026; remote checkpoint pending.** [Account/build evidence](WORKERS.md) verifies Worker/repository, commands, Node/tool versions, domains/date/assets-only operation and branch triggers. Explicit static config fixes the observed missing previews block and pins folder/custom-404 behaviour. Wrangler 4.149.0 deploy dry-run reads 42 assets; local emulation/QA passes nine preview pages and routing/security/crawling/disabled-collection checks. Twenty-four tests, normal/reference package output and docs checks pass. The owner separately approved correcting only Previews Base's build command to include `--preview`; it persisted after reload. No production deploy, manual retry, DNS change or live enquiry. Source preserves npm preview and separate optional tooling. Commit/push and final hosted-preview audit remain to be recorded.
+
 **P0 · ENGINE + FOLLENT · F7 · Dependencies: none; verified account details required**
 
 Read-only inspect authorised Cloudflare project commands, worker name, asset/404 routing and domains. Record unknowns. Add minimal explicit Wrangler static-assets config matching verified settings, with dist and no custom runtime Worker. Keep deployment tooling separate from dependency-free build; document supported version/Node settings. Keep explicit `--preview` for staging/branches because auto-detection is Pages-specific.

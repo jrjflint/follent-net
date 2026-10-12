@@ -20,7 +20,7 @@
 
 - [ ] Confirm hosting type and actual account settings. Follent is recorded as Workers Static Assets; Pages is the default for new client projects. Follow the matching README procedure, not both. Verify deployed commit, preview state, headers and custom 404s.
 - [ ] For interim staging use `npm run build -- --preview`, `dist` and Node 22; verify noindex headers/HTML, blocked crawling and disabled forms/analytics. Never deploy `.qa/privacy-review`.
-- [ ] Workers only: verify explicit Wrangler/static-asset configuration, build/deploy/preview commands and Worker custom domain setup. Do not add a Pages CNAME. Current missing tracked configuration is architecture task T07.
+- [ ] Workers only: verify `wrangler.jsonc`, separate production/Previews Base build commands and Worker custom domains. Both staging builds require `--preview`; preserve the owner-approved correction in [Workers evidence](docs/architecture/WORKERS.md). Do not add a Pages CNAME; verify deployed routing/headers after an authorised deployment.
 - [ ] Pages only: use Git integration, framework None, main, `dist`; register its custom domain through Pages before following its DNS instructions. Automatic non-main safeguards apply only with Pages environment variables; Workers staging requires explicit `--preview`.
 - [ ] At approved cutover, remove `--preview`, redeploy and inspect production output before routing the apex. Decide whether dev should move to a preview branch or separate staging project.
 - [ ] Test a branch preview; ensure noindex and disabled enquiries/analytics.

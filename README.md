@@ -134,17 +134,28 @@ GA4 loads only after explicit visitor opt-in, only on Professional/Growth produc
 
 ## Cloudflare Workers deployment (current Follent setup)
 
-The recorded Follent deployment uses **Workers Static Assets**, serving `dist`, with repository `jrjflint/follent-net` and Worker `follent-net`. These account details are recorded context, not a fresh live check on 12 October 2026. No explicit Wrangler configuration is tracked; reproducible configuration is [backlog T07](docs/architecture/TASKS.md#t07--reproducible-workers-deployment). Workers and Pages have separate settings. Pages remains the default client delivery pattern; do not recreate the recorded Follent deployment on Pages solely to follow that default.
+Follent uses **Workers Static Assets**, repository `jrjflint/follent-net`, Worker `follent-net` and `dist`. Account/build settings were inspected on 12 October 2026 and the owner approved one preview-command correction; see [Workers evidence](docs/architecture/WORKERS.md). `wrangler.jsonc` provides explicit static assets, clean folder URLs, custom 404, the existing dev domain and a required preview block. Workers and Pages have separate settings. Pages remains the default client delivery pattern; do not recreate Follent on Pages solely to follow that default.
 
-1. In **Workers & Pages → follent-net → Settings → Builds**, use production branch `main`, root `/`, build command `npm run build -- --preview`, and deploy command `npx wrangler deploy` for the interim site. Node 22 is selected by `.nvmrc`. Save settings and trigger a new Git build; the explicit flag is necessary because this engine's automatic Cloudflare branch detection is Pages-specific.
+1. In **Workers & Pages → follent-net → Settings → Builds**, the interim production settings are `main`, root `/`, build `npm run build -- --preview` and deploy `npx wrangler deploy`. **Previews Base has a separate build command, now corrected with owner approval to `npm run build -- --preview`; its preview command remains `npx wrangler preview`.** Retain the flag in both until a separately approved production cutover. Account changes require their own authorisation. Prefer pinning deployment/preview tooling to `npx --yes wrangler@4.149.0 deploy` / `npx --yes wrangler@4.149.0 preview` when reviewing those settings. Node 22 is selected by `.nvmrc`; Wrangler requires Node 22+. Its CLI is optional deployment tooling, not an engine dependency.
 2. Open **Domains → Add Domain** (or **Settings → Domains & Routes → Add → Custom Domain**, depending on dashboard layout) and add `dev.follent.net`. Workers custom domains require an active Cloudflare zone. Cloudflare creates DNS and the certificate; do not manually CNAME dev to workers.dev. Resolve any conflicting dev record first, preserving apex, www and email records.
 3. Verify the new deployment at dev: `build-info.json` must report preview true and forms/analytics false; inspect noindex headers, robots, clean page URLs and custom 404 behaviour. The dashboard's Production/Preview labels do not activate the engine's preview flag. Git pushes trigger connected builds; check the deployed commit and build logs rather than assuming a push proves deployment.
-4. Wrangler auto-configured static assets from `dist` in the initial Cloudflare build checkout. That does not commit its generated configuration to GitHub. Before production cutover, commit explicit Workers configuration, verify custom-domain persistence, static 404 handling and generated headers/redirects, and preserve the dependency-free site build and local `npm run preview` command.
+4. Use the tracked `wrangler.jsonc`, not an untracked auto-config generated in a build checkout. Preserve local `npm run preview` (the engine server); Wrangler local emulation is a separate optional check. Before an authorised deployment, verify custom-domain persistence, served custom 404, generated headers/redirects and the deployed commit. Local checks do not establish deployed behaviour.
 5. After migration/launch approval, configure the final apex separately, change the build command to `npm run build`, redeploy and verify production output and routing. Keep dev on a separate staging Worker if it must remain independent. Privacy activation and live delivery verification remain separate prerequisites.
 
 References: [Workers Static Assets](https://developers.cloudflare.com/workers/static-assets/), [Workers custom domains](https://developers.cloudflare.com/workers/configuration/routing/custom-domains/).
 
-Platform guidance checked 12 October 2026: [Workers builds](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/) separates build/deploy/preview commands. [Static asset headers](https://developers.cloudflare.com/workers/static-assets/headers/) apply to asset responses, not automatically to responses from custom Worker code. Keep explicit `--preview` for staging/branch builds; verify actual project settings and deployed headers before launch. No dashboard or live domain was rechecked here.
+Platform guidance checked 12 October 2026: [Workers builds](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/) separates build/deploy/preview commands; [preview configuration](https://developers.cloudflare.com/workers/previews/configuration/) requires its block. [Static asset headers](https://developers.cloudflare.com/workers/static-assets/headers/) apply to asset responses. Keep explicit `--preview` for staging/branches. Dashboard/build logs were inspected; live domain responses were not rechecked.
+
+For local verification only (second terminal for the last command):
+
+```sh
+npm run build -- --preview
+npx --yes wrangler@4.149.0 deploy --dry-run --config wrangler.jsonc --outdir .qa/worker-dry-run
+npx --yes wrangler@4.149.0 dev --local --config wrangler.jsonc --port 4191 --persist-to .qa/worker-state
+node scripts/worker-qa.mjs
+```
+
+Stop Wrangler before rebuilding. It emulates static routing/headers locally and does not deploy. Ordinary `npm run build` remains the separately reviewed production build.
 
 ## Cloudflare Pages deployment
 

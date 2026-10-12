@@ -1,0 +1,15 @@
+{
+  "name": "follent-net",
+  "compatibility_date": "2026-10-06",
+  "send_metrics": false,
+  "workers_dev": true,
+  "preview_urls": false,
+  "routes": [{ "pattern": "dev.follent.net", "custom_domain": true }],
+  "previews": {},
+  "observability": { "enabled": true },
+  "assets": {
+    "directory": "./dist",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  }
+}

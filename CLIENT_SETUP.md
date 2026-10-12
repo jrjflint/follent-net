@@ -60,6 +60,8 @@ Follent currently uses Workers Static Assets; follow [the current Workers instru
 
 Follow [README's Cloudflare Pages instructions](README.md#cloudflare-pages-deployment). Choose **Pages → Connect to Git**, rather than the Workers screen with Wrangler commands. For an interim domain use main, framework None, `npm run build -- --preview`, output `dist`, repository root and `NODE_VERSION=22`. Register the subdomain through Pages before adding its CNAME; preserve existing-site and mail DNS. The explicit preview flag disables enquiries/analytics and indexing on main. After launch review, switch to `npm run build`, redeploy and connect the final domain. Keep independent staging on a preview branch or separate project afterward.
 
+Remove Follent's `wrangler.jsonc` from a Pages client clone. For a deliberately chosen Workers clone, replace its Worker name and dev-domain route with the client's reviewed values and inspect both production and preview build commands. Do not deploy to Follent's Worker/domain. See README for the separate Workers procedure and optional pinned tooling; the shared npm preview command remains the local engine server.
+
 ```sh
 npm run build
 npm test
