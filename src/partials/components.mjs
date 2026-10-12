@@ -1,28 +1,8 @@
-import { escapeHTML as e, money } from '../lib/html.mjs';
-import { packages, managedPlans, addons, steps, faqs } from '../data/offers.mjs';
+import { escapeHTML as e } from '../lib/html.mjs';
 
 export const arrow = '<span aria-hidden="true">↗</span>';
 export const button = (href, text, secondary = false) => `<a class="button${secondary ? ' button-secondary' : ''}" href="${e(href)}">${e(text)} ${arrow}</a>`;
 export const intro = (kicker, title, text) => `<div class="section-heading"><p class="eyebrow">${e(kicker)}</p><h2>${e(title)}</h2>${text ? `<p class="lede">${e(text)}</p>` : ''}</div>`;
-export function packageCards(ctx) {
-  return `<div class="package-grid">${packages.map(p => `<article class="package${p.recommended ? ' recommended' : ''}"><div class="package-top"><p class="eyebrow">${e(p.name)}</p>${p.recommended ? '<span class="badge">Recommended</span>' : ''}</div><h3>${e(p.promise)}</h3><p class="package-description">${e(p.description)}</p><p class="price">${money(p.price)} <span>ex GST</span></p><ul class="feature-list">${p.features.map(f => `<li>${e(f)}</li>`).join('')}</ul><p class="small package-note">${e(p.note)}</p>${button(ctx.contactURL(p.id), `Choose ${p.name}`, !p.recommended)}</article>`).join('')}</div>`;
-}
-export function managed(ctx, compact = false) {
-  return `<section class="section" id="managed"><div class="container">${intro('Beyond the website', 'A better way to handle enquiries.', 'Optional managed services for Growth customers. Choose the level your business needs.')}${compact ? `<div class="managed-summary">${managedPlans.map(p => `<div><h3>${e(p.name)}</h3><p class="price small-price">${money(p.price)}<span>/month ex GST</span></p><p>${e(p.description)}</p></div>`).join('')}</div><a class="text-link" href="${ctx.isEssential ? '/#managed' : ctx.route('pricing') + '#managed'}">Explore managed services ${arrow}</a>` : `<div class="managed-grid">${managedPlans.map(p => `<article><h3>${e(p.name)}</h3><p class="price small-price">${money(p.price)}<span>/month ex GST</span></p><p>${e(p.description)}</p><ul class="feature-list">${p.features.map(f => `<li>${e(f)}</li>`).join('')}</ul></article>`).join('')}</div><p class="small">Setup scope, third-party fees and usage allowances are confirmed in your proposal. Monthly management is separate from the one-off website build. Advanced forms use a platform suited to the requirements; integrations are agreed per client.</p>`}</div></section>`;
-}
-export const scopeNote = `<aside class="scope-note" aria-label="Website package scope"><strong>Built for services. Designed for enquiries.</strong><p>All website packages are designed for service-based, informational and lead-generation websites. Ecommerce is not included. Online stores, carts, product catalogues, payment gateways, inventory, subscriptions, customer ecommerce accounts, shipping and fulfilment are outside standard scope. Ecommerce projects can be scoped separately using an appropriate ecommerce platform.</p></aside>`;
-export function addonSection() {
-  return `<section class="section" id="addons"><div class="container">${intro('Room to grow', 'Add what you need.', 'Optional additions, with scope agreed before work begins. All prices are ex GST.')}<dl class="addon-list">${addons.map(([name, price, description]) => `<div><dt>${e(name)}<span>${e(price)} <small>ex GST</small></span></dt><dd>${e(description)}</dd></div>`).join('')}</dl><div class="value-note"><p class="eyebrow">The value of a complete package</p><h3>One considered bundle.</h3><p>${e(packages[0].name)} (${money(packages[0].price)}) + copywriting (${e(addons[1][1])}) + local SEO (${e(addons[2][1])}) = <strong>${money(packages[0].price + Number(addons[1][1].replace(/[^0-9]/g, '')) + Number(addons[2][1].replace(/[^0-9]/g, '')))} ex GST</strong>.</p><p>${e(packages[1].name)} costs ${money(packages[1].price)} ex GST and also includes up to five pages, analytics setup, a Google Business Profile review and two revision rounds.</p></div></div></section>`;
-}
-export function process() {
-  return `<ol class="process-list">${steps.map(([title, text], i) => `<li><span class="step-number" aria-hidden="true">0${i + 1}</span><div><h3>${e(title)}</h3><p>${e(text)}</p></div></li>`).join('')}</ol>`;
-}
-export function faq() {
-  return `<section class="section" id="faq"><div class="container faq-layout">${intro('A few practical answers', 'Good questions. Clear answers.')}<div class="faq-list">${faqs.map(([q, a]) => `<details><summary>${e(q)}<span aria-hidden="true">+</span></summary><p>${e(a)}</p></details>`).join('')}</div></div></section>`;
-}
-export function closing(ctx) {
-  return `<section class="closing"><div class="container closing-inner"><div><p class="eyebrow">Your next chapter</p><h2>A website you can<br>feel confident in.</h2><p>Tell us where your business is now, and where you would like it to go.</p></div>${button(ctx.primaryHref, ctx.site.primaryCTA.label)}</div></section>`;
-}
 export function contactDetails(site) {
   const items = [];
   if (site.email) items.push(`<a href="mailto:${e(site.email)}">${e(site.email)}</a>`);

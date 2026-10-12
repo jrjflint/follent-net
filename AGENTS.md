@@ -30,7 +30,8 @@ The existing architecture is approved: **Node 22+ at build time, dependency-free
 | `src/data/projects.mjs` | Verified, permission-cleared portfolio entries |
 | `src/pages/content.mjs` | Page definitions, business copy, page composition and native form markup |
 | `src/pages/privacy-policy.mjs` | Unified privacy entry, Follent numbered content and client scaffold; contact/retention come from config |
-| `src/partials/components.mjs` | Shared section/component markup |
+| `src/partials/components.mjs` | Generic button, section introduction and contact markup; no commercial data imports |
+| `src/partials/follent-commercial.mjs` | Follent commercial sections with catalogue/process/FAQ data supplied by the page layer |
 | `src/layouts/document.mjs` | Document head, navigation, footer, metadata and business/breadcrumb schema |
 | `src/lib/html.mjs` | Escaping, JSON-LD serialisation and URL helpers |
 | `src/lib/config.mjs` | Explicit public config checks before output replacement |

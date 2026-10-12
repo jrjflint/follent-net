@@ -24,6 +24,8 @@ Professional and Growth currently generate ten total pages, including success/er
 
 `src/pages/content.mjs` contains the page copy and `src/data/offers.mjs` the Follent service/pricing content. These must be adapted to the client's actual business. Changing configuration does not rewrite their offer. Remove Follent pricing, project examples, AI-process descriptions and website-service managed plans where irrelevant.
 
+Use `src/partials/components.mjs` for generic button/intro/contact helpers. Remove or replace imports/calls to `src/partials/follent-commercial.mjs` when the client does not sell Follent services. That module takes explicit catalogue/process/FAQ arrays; it does not load offers on behalf of shared layouts. Do not copy Follent managed-plan or closing copy as another business's offer.
+
 Reuse the shared layout, section components, fonts, accessible navigation, form shell and SEO generation. Remove unused modules, then make navigation match the retained pages. Essential links are rewritten to homepage sections; retain matching section IDs or update `context()` when changing the information architecture. Add pages by adding a definition with unique `slug`, `nav`, `title`, `description` and `render`.
 
 Only publish approved facts. Do not invent reviews, outcomes, awards or business credentials. Replace proof placeholders with verified work and permission-cleared descriptions. Human review is required for AI-assisted copy.

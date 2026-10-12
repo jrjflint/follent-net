@@ -30,6 +30,10 @@ Make normal Follent privacy call the reviewed numbered renderer, preserving nine
 
 ## T03 — Separate commercial sections from generic helpers
 
+Implementation moves Follent sections into `follent-commercial.mjs`, leaves generic helpers independent, and supplies catalogue/process/FAQ arrays from pages. Page returns are formatted by outer section boundaries with no output whitespace changes. Verification compares all 23 package HTML files byte-for-byte against pre-task output; isolated gardening render blocks any Follent offers/projects import.
+
+**Completed 12 October 2026.** Thirteen Node tests pass, including isolated generic rendering and supplied-data commercial sections. Normal build/check, all package checks and docs pass. All 23 package HTML files are byte-identical before/after; pricing/metadata/markup are preserved, so no visual/browser rerun or tracked artwork regeneration was necessary. Windows loader file-URL handling was corrected before final tests. No config/asset changes. Remote push verification is the completion checkpoint.
+
 **P1 · ENGINE + FOLLENT · F3 · Dependencies: none**
 
 Keep button/intro/contact helpers generic. Move cards, managed plans, scope notes, add-ons, process/FAQ and website-specific closing copy into a Follent commercial module. Pass offer data explicitly; generic modules must not import Follent offers/projects. Format long page render functions by section without changing markup. No CMS/content framework.
