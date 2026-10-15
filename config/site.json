@@ -18,7 +18,7 @@
   "googleBusinessProfileURL": "",
   "socialURLs": [],
   "analytics": { "measurementId": "G-K54S78JQ7L", "tagManagerId": "GTM-5F9LKZC", "searchConsoleVerification": "" },
-  "form": { "provider": "formspark", "endpoint": "https://submit-form.com/aHeuOMHHg", "formtrackEnabled": true, "turnstileSiteKey": "", "externalURL": "" },
+  "form": { "provider": "formspark", "endpoint": "https://submit-form.com/aHeuOMHHg", "formtrackEnabled": true, "turnstileSiteKey": "0x4AAAAAAFXKT3iT8ehDa2zj", "externalURL": "" },
   "brand": { "ivory": "#F2F0EA", "noir": "#0A0A0C", "bordeaux": "#4A002E" },
   "copyrightYear": 2026,
   "privacy": { "approved": true, "contactEmail": "privacy@follent.net", "retention": "We retain enquiry and correspondence records for as long as reasonably needed to respond, provide agreed services and maintain relevant business records. Enquiry records in our CRM may be retained for future business activities for up to seven years. Particular records may need to be retained to meet legal obligations or resolve disputes. Backup copies may remain until the relevant backups expire.", "policy": "follent" },

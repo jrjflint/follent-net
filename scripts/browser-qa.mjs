@@ -123,6 +123,8 @@ try {
     fixture.form.endpoint = 'https://submit-form.com/qa-test';
     // Attribution has a dedicated actual-library test; keep these mocks isolated.
     fixture.form.formtrackEnabled = false;
+    // These transport mocks do not load a real challenge or obtain a Turnstile token.
+    fixture.form.turnstileSiteKey = '';
     fixture.email = 'qa@example.com'; fixture.privacy.contactEmail = 'qa@example.com'; fixture.privacy.approved = true; fixture.privacy.retention = 'QA fixture only.';
     await writeFile(path.join(root, '.qa/form-config.json'), JSON.stringify(fixture));
     await build({ configFile: '.qa/form-config.json', output: '.qa/form' });

@@ -1,5 +1,11 @@
 # QA report — 9 October 2026
 
+## Turnstile configuration — 15 October 2026
+
+FOLLENT configuration now includes the owner-supplied public Turnstile site key. Existing ENGINE rendering, transport and CSP handle it without production-code changes. Browser transport fixtures explicitly clear the inherited key because their scripts are stubbed and cannot obtain challenge tokens.
+
+All 27 Node tests, normal build/output checks, three package output checks and documentation checks pass. Reference browser QA passes 40 responsive layouts and eight behaviour scenarios with zero axe violations. Garden passes 32 layouts/two scenarios on repeat; its first run reported a colour-contrast finding on Home at 768px, so that initial finding is not presented as a clean pass. A targeted ignored `.qa/turnstile-qa.mjs` check confirms the configured key, single widget script, script/frame/connect CSP permissions, no overflow at four widths, missing-token blocking and mocked token submission/success. Every external request in that check is intercepted; it does not render a real Cloudflare challenge. Source artwork is unchanged. No deployment, Formspark dashboard change, live challenge validation, email delivery or new Lighthouse measurement is claimed.
+
 ## GTM and accepted-enquiry tracking — 12 October 2026
 
 GTM `GTM-5F9LKZC` now replaces direct GA loading in Follent's normal builds, with the existing opt-in/DNT/GPC and preview/package containment. The local external head loader replaces the unconditional snippet; no noscript iframe bypasses consent. The privacy disclosure and client reset instructions include GTM. Dashboard tags/key-event settings and live collection are not configured or verified by this source change; see [setup steps](docs/analytics/GTM_SETUP.md).
