@@ -14,8 +14,10 @@ const { chromium } = require('playwright');
 const AxeBuilder = require('@axe-core/playwright').default;
 const chrome = process.env.CHROME_PATH || 'C:/Program Files/Google/Chrome/Application/chrome.exe';
 const fixtureName = process.argv.includes('--fixture') ? process.argv[process.argv.indexOf('--fixture') + 1] : 'reference';
+const widths = process.argv.includes('--extended') ? [320, 375, 390, 430, 768, 1024, 1440] : [320, 390, 768, 1440];
 if (!['reference', 'garden'].includes(fixtureName)) throw new Error('Use --fixture reference or garden');
-const browser = await chromium.launch({ executablePath: chrome, headless: true });
+const chromeServer = await chromium.launchServer({ executablePath: chrome, headless: true });
+const browser = await chromium.connect(chromeServer.wsEndpoint());
 await mkdir(path.join(root, '.qa/screenshots'), { recursive: true });
 const results = { fixture: fixtureName, layouts: [], accessibility: [], behaviours: [], errors: [], interceptedExternalRequests: [] };
 const servers = [];
@@ -70,7 +72,7 @@ try {
     const definitions = buildOptions.pages || pageDefinitions;
     const enquiryPage = definitions.find(page => page.enquiryForm && info.pages.includes(page.slug));
     const enquiryPath = enquiryPage ? `/${enquiryPage.slug}/` : urls.includes(mainBuild.ctx.primaryHref) ? mainBuild.ctx.primaryHref : '/';
-    for (const width of [320, 390, 768, 1440]) {
+    for (const width of widths) {
       const ctx = await localContext({ viewport: { width, height: 1000 }, reducedMotion: 'reduce' });
       await ctx.route('https://submit-form.com/**', route => route.abort());
       const page = await ctx.newPage();
@@ -226,7 +228,22 @@ try {
     console.log(`${results.layouts.length} responsive page checks; ${violations.length} pages with axe violations. ${results.behaviours.length} behaviour scenarios.`);
     if (violations.length) { console.log(JSON.stringify(violations, null, 2)); process.exitCode = 1; }
   }
+} catch (error) {
+  console.error(error);
+  process.exitCode = 1;
 } finally {
   for (const child of servers) child.kill();
-  await browser.close();
+  // Windows can leave the protocol shutdown pending after intercepted Analytics.
+  // Terminate and await only the process launched by this suite, never user Chrome.
+  const owned = chromeServer.process();
+  if (owned.exitCode === null && owned.signalCode === null) {
+    await new Promise((resolve, reject) => {
+      const timer = setTimeout(() => reject(new Error('Owned QA Chrome did not exit')), 5000);
+      owned.once('exit', () => { clearTimeout(timer); resolve(); });
+      if (!owned.kill('SIGKILL')) { clearTimeout(timer); reject(new Error('Could not stop owned QA Chrome')); }
+    });
+  }
 }
+// All reports/checks and owned-process cleanup are awaited above. Close the
+// optional protocol server's event loop as well, preserving any failure status.
+process.exit(process.exitCode || 0);

@@ -38,6 +38,8 @@ async function isolatedContext(options = {}) {
 async function fixture(profile, site, intake, port) {
   site = structuredClone(site);
   site.form.endpoint = endpoint;
+  // Transport fixtures are independent of the challenge lifecycle tested by ui-qa.mjs.
+  site.form.turnstileSiteKey = '';
   site.form.formtrackEnabled = true;
   site.analytics.measurementId = '';
   const baseContext = context(await loadConfig(), { preview: false });

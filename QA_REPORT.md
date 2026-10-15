@@ -1,5 +1,26 @@
 # QA report — 9 October 2026
 
+## Mobile-first implementation — 15 October 2026
+
+All 16 tasks are implemented locally; the [UI review](docs/ui/REVIEW.md) retains the original audit, batch checkpoints and final outcomes. Source tests pass 30 cases, the normal ten-page build/output and all three package variants pass, and generated HTML/documentation validation passes. Extended browser QA covers 70 reference and 56 garden layouts with zero axe violations, plus eight and two behaviour scenarios. The reusable form-shell suite passes eight layouts/twelve mocked scenarios. Ordinary QA preserves tracked artwork.
+
+`node scripts/ui-qa.mjs` passes 21 measured layouts, fourteen breakpoint checks and ten scenario groups, including 200% text/320px reflow, emulated forced colours/reduced motion, menu/focus/landscape, in-flow preferences, blocked/slow/late verification, compact iframe sizing, error/expiry/timeout recovery, pending duplicates, accepted/rejected submission, a real 20-second abort and disabled/no-JS alternatives. All external services are intercepted. This models the provider API/iframe; it does not validate real Cloudflare tokens or Formspark delivery. The reference QA runner now owns a BrowserServer and kills only its own Chrome process after checks, avoiding a Windows graceful-close hang observed after completed Analytics scenarios.
+
+At 390px with preferences dismissed, Home is 8,953px (20.4% below the 11,248px baseline), its hero is 978px, and Contact's first field starts at Y=655px (previously 1,405px). Input text is 16px. Pricing increases from 8,904px to 9,502px because readable type/targets take more room; native contents/package anchors improve access without hiding detail. Footer/Contact/error paths use the owner-approved `james@follent.net` alternative.
+
+Fresh Lighthouse 13.5.0 mobile Home/Contact checks on an isolated **indexable, collection-disabled** local fixture each score **100/100/100/100**, with LCP 1.7s and CLS 0. Explicit preview checks separately score **100/100/100/66** because noindex is intentional; no safeguard was removed from previews to improve a score. Evidence is `.qa/lighthouse-home.json`, `.qa/lighthouse-contact.json`, separate `.qa/lighthouse-ui-preview-*` JSON, `.qa/ui-results.json` and the browser/form-shell reports/screenshots. The disabled fixtures do not measure real widget/opted-in container cost. Source approval flags remain unchanged; no deployment, account/DNS change, provider setting change or live submission was performed. Real-device/iOS zoom, actual screen-reader/forced-colour review, real challenge validation, current email delivery and production field performance remain separate checks.
+
+For the extended matrix and focused states, use the existing optional tools under `.qa/tools`:
+
+```sh
+node scripts/browser-qa.mjs --extended
+node scripts/browser-qa.mjs --fixture garden --extended
+node scripts/form-shell-qa.mjs
+node scripts/ui-qa.mjs
+```
+
+The UI suite creates only ignored synthetic normal/preview builds and intercepts every non-local request. To reproduce Lighthouse safely, use a separate ignored configuration with the form endpoint and both Google IDs empty and privacy approval false, build it without `--preview` for the isolated indexable check, then serve it locally. Set `QA_BASE_URL` to that local origin and run `node scripts/lighthouse-qa.mjs home contact`. Also check an explicit preview separately; expect its noindex-related SEO finding. Never change committed approval flags or live integrations for a lab score. Earlier sections below describe their own historical checkpoints.
+
 ## Turnstile configuration — 15 October 2026
 
 FOLLENT configuration now includes the owner-supplied public Turnstile site key. Existing ENGINE rendering, transport and CSP handle it without production-code changes. Browser transport fixtures explicitly clear the inherited key because their scripts are stubbed and cannot obtain challenge tokens.
