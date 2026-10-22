@@ -22,7 +22,7 @@ export function document(page, ctx) {
   const title = `${page.title} | ${s.businessName}`;
   const navLinks = (ctx.navigation || []).map(item => `<a href="${e(item.href)}"${page.slug === item.slug ? ' aria-current="page"' : ''}>${e(item.label)}</a>`).join('');
   const schema = jsonScript(schemaFor(page, ctx));
-  const scripts = `<script src="/assets/js/site.js" defer></script>${page.enquiryForm === true && s.package === 'growth' && s.form.provider === 'formspark' ? '<script type="module" src="/assets/js/form.js"></script>' : ''}`;
+  const scripts = `${page.enquiryForm === true && s.package === 'growth' && s.form.provider === 'formspark' ? '<script type="module" src="/assets/js/form.js"></script>' : ''}`;
   return `<!DOCTYPE html>
 <html lang="en-AU">
 <head>
@@ -60,6 +60,7 @@ ${scripts}
 <body${ctx.analyticsEnabled ? ` data-analytics-id="${e(s.analytics.measurementId)}"` : ''}>
 <a class="skip-link" href="#main">Skip to content</a>
 <header class="site-header"><div class="container header-inner"><a class="wordmark" href="/" aria-label="${e(s.businessName)} home">${e(s.wordmark)}<span>.</span></a><button type="button" class="menu-toggle" aria-expanded="false" aria-controls="main-nav" hidden><span data-menu-label>Menu</span> <span aria-hidden="true">☰</span></button><nav id="main-nav" aria-label="Main navigation">${navLinks}${button(ctx.primaryHref, s.primaryCTA.label)}</nav></div></header>
+<script src="/assets/js/site.js"></script>
 ${ctx.analyticsEnabled ? '<aside class="analytics-notice" aria-label="Analytics preference" hidden><p>Allow optional analytics to help us improve this website? <a href="/privacy-policy/">Privacy notice</a></p><div class="button-row"><button type="button" class="button" data-analytics-choice="allow">Allow analytics</button><button type="button" class="button button-secondary" data-analytics-choice="deny">Decline</button></div></aside>' : ''}
 <main id="main" tabindex="-1">${page.render(ctx)}</main>
 <footer class="site-footer"><div class="container"><div class="footer-main"><div><a class="wordmark" href="/" aria-label="${e(s.businessName)} home">${e(s.wordmark)}<span>.</span></a><p>${e(s.tagline)}</p><p class="small">Serving ${e(s.serviceArea)}, ${e(s.address.state)}, Australia.</p></div><div><p class="eyebrow">Explore</p><nav aria-label="Footer navigation">${navLinks}<a href="/privacy-policy/">Privacy</a></nav></div><div><p class="eyebrow">Let’s talk</p>${contactDetails(s, { enquiryHref: ctx.formEnabled && !page.enquiryForm && page.slug !== 'form-error' ? ctx.primaryHref : '' })}${s.socialURLs.length ? `<div class="contact-links">${s.socialURLs.map((url, i) => `<a href="${e(url)}">Social profile ${i + 1}</a>`).join('')}</div>` : ''}</div></div><div class="footer-bottom"><span>© ${e(s.copyrightYear)} ${e(s.legalName || s.businessName)}${s.abn ? ` · ABN ${e(s.abn)}` : ''}</span><span>All prices AUD, ex GST.</span></div></div></footer>

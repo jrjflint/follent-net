@@ -7,6 +7,8 @@
   const blocked = () => navigator.globalPrivacyControl || navigator.doNotTrack === '1';
   const stored = () => { try { return localStorage.getItem(key); } catch { return null; } };
   let preference = stored();
+  // Reserve the in-flow prompt before first paint, without enabling tracking.
+  if (!preference && !blocked()) document.documentElement.dataset.analyticsPrompt = 'pending';
   let loaded = false;
   window.dataLayer = window.dataLayer || [];
   window.gtag = function () { window.dataLayer.push(arguments); };
@@ -50,6 +52,7 @@
     const notice = document.querySelector('.analytics-notice');
     if (!notice) return;
     if (!preference && !blocked()) notice.hidden = false;
+    delete document.documentElement.dataset.analyticsPrompt;
     document.querySelectorAll('[data-analytics-choice]').forEach(button => button.addEventListener('click', () => {
       preference = button.dataset.analyticsChoice;
       try { localStorage.setItem(key, preference); } catch { /* Navigation works without storage. */ }

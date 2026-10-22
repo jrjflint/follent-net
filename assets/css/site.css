@@ -353,3 +353,7 @@ h1,h2,h3{overflow-wrap:anywhere}
 }
 @media(min-width:1400px){.analytics-notice{margin-inline:auto}}
 @media print{.analytics-notice{display:none!important}}
+
+/* The head consent bootstrap reveals the in-flow prompt before first paint. */
+@media screen{html[data-analytics-prompt] .analytics-notice[hidden]{display:block!important}}
+@media screen and (min-width:1024px){html[data-analytics-prompt] .analytics-notice[hidden]{display:flex!important}}

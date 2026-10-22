@@ -19,6 +19,7 @@ function fixture({ preference = null, navigator = {}, container = 'GTM-QATEST1' 
     localStorage: { getItem: () => preference, setItem: (_, value) => { preference = value; } },
     location: { origin: 'https://site.example', pathname: '/contact/', reload: () => {} },
     document: {
+      documentElement: { dataset: {} },
       currentScript: { dataset: { analyticsId: 'G-QATEST1', tagManagerId: container } },
       referrer: 'https://ref.example/path/?email=private#secret',
       createElement: () => ({}), head: { append: script => scripts.push(script) },
@@ -28,17 +29,22 @@ function fixture({ preference = null, navigator = {}, container = 'GTM-QATEST1' 
     }
   };
   vm.runInNewContext(source, sandbox);
+  const initialPrompt = sandbox.document.documentElement.dataset.analyticsPrompt;
   listeners.ready();
-  return { scripts, listeners, window, notice };
+  return { scripts, listeners, window, notice, initialPrompt, rootDataset: sandbox.document.documentElement.dataset };
 }
 
 test('GTM honours opt-in, decline, DNT and GPC before any Google request', () => {
   for (const options of [{}, { preference: 'deny' }, { preference: 'allow', navigator: { doNotTrack: '1' } }, { preference: 'allow', navigator: { globalPrivacyControl: true } }]) {
     const f = fixture(options);
     assert.equal(f.scripts.length, 0);
+    assert.equal(f.initialPrompt, options.preference || options.navigator ? undefined : 'pending');
     assert.equal(f.window.siteTrack('generate_lead', { package: 'growth' }), undefined);
   }
   const f = fixture();
+  assert.equal(f.initialPrompt, 'pending');
+  assert.equal(f.rootDataset.analyticsPrompt, undefined);
+  assert.equal(f.notice.hidden, false);
   f.listeners.deny();
   assert.equal(f.scripts.length, 0);
   f.listeners.allow();
@@ -78,6 +84,8 @@ test('GTM config applies to all production pages with package and preview contai
     const html = renderDocument(page, context(site));
     assert.equal((html.match(/src="\/assets\/js\/analytics.js"/g) || []).length, 1);
     assert.ok(html.indexOf('/assets/js/analytics.js') < html.indexOf('<title>'));
+    assert.ok(html.indexOf('</header>') < html.indexOf('/assets/js/site.js'));
+    assert.ok(html.indexOf('/assets/js/site.js') < html.indexOf('<main'));
     assert.match(html, /data-tag-manager-id="GTM-5F9LKZC"/);
     assert.doesNotMatch(html, /ns.html|unsafe-inline/);
     assert.doesNotMatch(renderDocument(page, context(site, { preview: true })), /analytics.js|GTM-5F9LKZC/);
