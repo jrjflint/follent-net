@@ -1,6 +1,8 @@
 # Stage 2 Pages launch report
 
-Date: 22 October 2026 (Australia/Sydney). Status: **apex cutover complete; final acceptance and Flywheel alias cleanup pending**.
+Date: 22 October 2026 (Australia/Sydney). Status: **Stage 2 accepted; apex cutover and Flywheel alias cleanup complete**.
+
+Final acceptance recorded 22 October 2026, 20:26 AEDT.
 
 The [Stage 1 archive](wordpress-archive/STAGE1_REPORT.md) remains hosted on Flywheel. This stage affects FOLLENT hosting/configuration and a small shared ENGINE loading correction.
 
@@ -41,7 +43,7 @@ The existing Worker continues to serve dev.follent.net with preview-safe output.
 - Archive remains a proxied CNAME to follent.flywheelsites.com with valid HTTPS and noindex.
 - DNS comparison confirms **only apex, www and ftp changed**. Mail, verification, archive and all other records remain unchanged. Zone SSL remains **Full (strict)**.
 - Purged affected entry URLs and all 258 exact legacy apex URLs. A cached Flywheel image initially returned 200; after the targeted purge every legacy path returns its expected 301.
-- Chrome retained a previous Flywheel permanent redirect for the plain homepage. Fresh HTTP checks pass; owner browser cache-clear confirmation is pending. Final-domain Contact loads in Chrome and completes spam verification.
+- Chrome retained a previous Flywheel permanent redirect for the plain homepage. Fresh HTTP checks pass; the owner subsequently confirmed the new business homepage loads after clearing cached images/files. An agent-controlled Chrome tab still retained the earlier redirect; this does not contradict the fresh HTTPS results or owner confirmation. Final-domain Contact loads in Chrome and completes spam verification.
 
 Private recovery/settings snapshots and DNS comparison are in ignored secrets/archive-migration-2026-10-22. Detailed public-response evidence and screenshots are in ignored .qa/stage2-recovery.
 
@@ -82,13 +84,21 @@ The owner explicitly approved the exact initial synthetic payload and recipients
 
 The owner explicitly approved one live analytics opt-in. Before clicking, Chrome displayed the consent prompt; after clicking it closed and DOM script inspection showed the configured GTM-5F9LKZC and GA4 G-K54S78JQ7L loaders. Published GTM contains that measurement ID. Unit/browser suites cover no Google request before opt-in, decline, DNT/GPC, sanitised URLs and restricted conversion payloads. The same live test session then used Change analytics preference and Decline; it reloaded with only local analytics.js/site.js and no Google loaders. This proves opt-in and withdrawal behaviour, not a newly observed GA4 dashboard event.
 
-A separate final-domain test, FOLLENT-LAUNCH-20261022-02, is prepared at https://follent.net/contact/ with successful spam verification. Exact-payload approval and delivery verification are pending. Do not send duplicate tests or claim acceptance before the result is observed.
+The owner explicitly approved the separate final-domain test FOLLENT-LAUNCH-20261022-02. It reached https://follent.net/success/ and is stored exactly once in Formspark, ID L6x08Yd1cxVSDRfGc55PW, at 19:56 Sydney. The owner confirmed that its notification arrived at james@follent.net. No duplicate test was sent; receipt is owner-attested rather than inferred from acceptance/storage.
 
-## Acceptance and rollback gate
+## Final acceptance and rollback
 
-Final acceptance awaits the post-cutover test and plain-homepage browser confirmation. Flywheel apex/www aliases remain in place until acceptance; archive hosting and recovery files remain retained.
+**All Stage 2 launch acceptance gates pass.** Apex serves the reviewed business site through Pages; www canonicalises correctly; valid HTTPS, production indexing, security headers, legacy redirects and custom 404 are verified; real final-domain enquiry acceptance, storage and owner-confirmed inbox delivery succeed. The WordPress archive remains intact.
 
-Rollback before alias removal: restore the recorded apex/www A records to 151.101.194.159 and disable only the new www redirect. After alias removal: re-add apex/www aliases to Flywheel first, then restore DNS/routing. Verify the archive and apex behaviour. No database restoration is needed unless actual data recovery is necessary.
+After those gates passed, removed only www.follent.net and follent.net aliases from Flywheel at approximately 20:18 Sydney. The dashboard confirms archive.follent.net is primary with Simple SSL; the temporary follent.flywheelsites.com hostname remains. Hosting, backups, archive content and administrator access were retained.
+
+Flywheel briefly labelled archive SSL Not Enabled and some content requests returned 502/timeouts during its post-alias reconfiguration. The supported Add SSL action re-enabled Simple SSL for the retained hostname. Direct-origin HTTPS passed with ordinary certificate validation and public HTTPS passed under Cloudflare Full (strict). The final 33-route archive crawl passes: 30 content 200 with notice/noindex, three intentional commerce/account 403, zero detected old-apex or mixed-resource references. Twelve representative archive media URLs return 200. A repeat apex sweep confirms all 258 redirects still pass.
+
+Flywheel displays a temporary one-hour cooldown on additional SSL requests after activation; this is not a failure of the active archive certificate, and no additional certificate request is required. Local TLS inspection means local certificate issuer/expiry metadata is not treated as authoritative upstream certificate evidence.
+
+Rollback now requires re-adding apex/www aliases to Flywheel first, restoring their recorded A records to 151.101.194.159, and disabling only the new www redirect. Verify the archive and apex behaviour afterward. Restore data only for actual content/database loss. Do not cancel archive hosting.
+
+Final account snapshot confirms Pages custom domains active, reviewed deployed commit 923ba6bed809bdfb973bb863db07e9e70532b55c, Full (strict), automatic RUM off and the existing preview-containment WAF ruleset unchanged at version 1. Private evidence is in stage2-final-account.json under the ignored recovery directory.
 
 ## Monitoring
 
@@ -97,4 +107,3 @@ Search Console domain access is verified; the pre-cutover baseline showed 24 ind
 Immediate checks are recorded above. Rechecks are due **23 October 2026 around 19:40 Sydney** and **29 October 2026 around 19:40 Sydney**: apex/www/archive HTTPS, redirects and missing URLs, enquiries/provider quota, consent, Search Console sitemap/indexing and real-device performance. Future checks have not been performed or automatically scheduled.
 
 Flywheel cancellation, archive retirement, Shopify publication and Worker deletion remain excluded. Automatic review blocks on exact test payloads and live opt-in were resolved through explicit owner approval; rejected preservation/encoding edits were replaced by targeted validated changes.
-

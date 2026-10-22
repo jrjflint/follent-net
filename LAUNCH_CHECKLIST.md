@@ -1,6 +1,6 @@
 # Launch checklist
 
-Current Follent execution: apex/www were connected to Pages on 22 October 2026. See [Stage 2 report](migration/STAGE2_REPORT.md) for dated evidence, final acceptance and follow-up checks. The individual checks below remain a reusable checklist.
+Current Follent execution: apex/www were connected to Pages on 22 October 2026. Stage 2 is accepted; see [the report](migration/STAGE2_REPORT.md) for dated evidence and follow-up checks. The individual checks below remain a reusable checklist.
 
 ## Before deployment
 
