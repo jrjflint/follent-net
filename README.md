@@ -17,7 +17,9 @@ Run `npm run check:docs` after documentation changes. The dependency-free checke
 
 README owns engine commands, configuration and hosting procedures; [CLIENT_SETUP.md](CLIENT_SETUP.md) owns the clone workflow; [AGENTS.md](AGENTS.md) owns engineering constraints; [LAUNCH_CHECKLIST.md](LAUNCH_CHECKLIST.md) records manual launch decisions. AI_CLIENT_BUILD_PROMPT points to those instructions. QA_REPORT and specialist reports retain dated evidence; consult task status for fixes rather than treating historical findings as current defects.
 
-**Recorded implementation state:** owner-approved form activation and retention were recorded on 9 October 2026. Source configuration enables Formspark and optional GA4 in normal Growth builds; previews disable collection/tracking. On 15 October the owner approved `james@follent.net` for public project enquiries and recovery. Search Console and migration/business launch flags remain incomplete. [Isolated synthetic testing](docs/form-e2e/REPORT.md) recorded enhanced/native storage and owner-confirmed inbox receipt. These are dated observations, not verification of current deployed-origin collection or production cutover. No DNS or hosting changes accompany the UI work.
+**Launch migration, 22 October 2026:** [Stage 1 is accepted](migration/wordpress-archive/STAGE1_REPORT.md): WordPress is a read-only, noindex archive on Flywheel. Stage 2 prepares Git-integrated Cloudflare Pages for the business site; see [Stage 2 status](migration/STAGE2_REPORT.md). Apex/www remain on Flywheel until the launch gates pass.
+
+**Recorded implementation state:** owner-approved form activation and retention were recorded on 9 October 2026. Source configuration enables Formspark and optional GA4 in normal Growth builds; previews disable collection/tracking. On 15 October the owner approved `james@follent.net` for public project enquiries and recovery. The owner confirmed migration/business launch reviews on 22 October 2026; Search Console domain access was verified during Stage 2. [Isolated synthetic testing](docs/form-e2e/REPORT.md) recorded enhanced/native storage and owner-confirmed inbox receipt. These are dated observations, not verification of current deployed-origin collection or production cutover. No DNS or hosting changes accompany the UI work.
 
 **T02 implementation, 12 October 2026:** `/privacy-policy/` now uses `src/pages/privacy-policy.mjs` in normal and review builds. Explicit `privacy.policy: "follent"` selects Follent's numbered content; `"client"` (also the omitted-field default) selects the client draft. The Follent selection is rejected for a different business/domain. The client scaffold cannot be approved until replaced in its content module. Contact/retention come from config, and preview text follows disabled capabilities. Earlier integration claims were corrected before this implementation; no deployed commit or dashboard setting is verified by this change. See [privacy review](docs/privacy-policy/REVIEW.md).
 
@@ -142,32 +144,13 @@ GA4/GTM loads only after explicit visitor opt-in, only on Professional/Growth pr
 
 ## Cloudflare Workers deployment (current Follent setup)
 
-Follent uses **Workers Static Assets**, repository `jrjflint/follent-net`, Worker `follent-net` and `dist`. Account/build settings were inspected on 12 October 2026 and the owner approved one preview-command correction; see [Workers evidence](docs/architecture/WORKERS.md). `wrangler.jsonc` provides explicit static assets, clean folder URLs, custom 404, the existing dev domain and a required preview block. Workers and Pages have separate settings. Pages remains the default client delivery pattern; do not recreate Follent on Pages solely to follow that default.
+**Historical configuration; Pages migration authorised 22 October 2026.** The existing Worker continues to serve dev.follent.net during launch. Do not delete it, its preview containment rules or its domain. Its former root configuration is retained as [dated evidence](docs/architecture/WORKERS_CONFIG_2026-10-22.jsonc); the root Wrangler file has been removed from the Pages source. [Workers account evidence](docs/architecture/WORKERS.md) retains the prior procedure and owner-approved preview corrections.
 
-1. In **Workers & Pages → follent-net → Settings → Builds**, the interim production settings are `main`, root `/`, build `npm run build -- --preview` and deploy `npx wrangler deploy`. **Previews Base is corrected to `npm run build -- --preview`, but existing previews have separate settings: inspect each preview's Settings → Builds → Build configuration. The improvements/template-reuse command is now corrected too; its first successful upload served unsafe normal output before this separate owner-approved correction; the replacement now passes served preview safeguards.** Preview upload remains `npx wrangler preview`. Retain the flag in all staging builds until a separately approved production cutover. Account changes require their own authorisation. Prefer pinning deployment/preview tooling to `npx --yes wrangler@4.149.0 deploy` / `npx --yes wrangler@4.149.0 preview` when reviewing those settings. Node 22 is selected by `.nvmrc`; Wrangler requires Node 22+. Its CLI is optional deployment tooling, not an engine dependency.
-2. Open **Domains → Add Domain** (or **Settings → Domains & Routes → Add → Custom Domain**, depending on dashboard layout) and add `dev.follent.net`. Workers custom domains require an active Cloudflare zone. Cloudflare creates DNS and the certificate; do not manually CNAME dev to workers.dev. Resolve any conflicting dev record first, preserving apex, www and email records.
-3. Verify the new deployment at dev: `build-info.json` must report preview true and forms/analytics false; inspect noindex headers, robots, clean page URLs and custom 404 behaviour. The dashboard's Production/Preview labels do not activate the engine's preview flag. Git pushes trigger connected builds; check the deployed commit and build logs rather than assuming a push proves deployment.
-4. Use the tracked `wrangler.jsonc`, not an untracked auto-config generated in a build checkout. Preserve local `npm run preview` (the engine server); Wrangler local emulation is a separate optional check. Before an authorised deployment, verify custom-domain persistence, served custom 404, generated headers/redirects and the deployed commit. Local checks do not establish deployed behaviour. The current beta branch preview serves the generated 404 asset but returns a plain HTTP 404 for unknown paths; verify the required custom missing-route response before production launch.
-5. After migration/launch approval, configure the final apex separately, change the build command to `npm run build`, redeploy and verify production output and routing. Keep dev on a separate staging Worker if it must remain independent. Privacy activation and live delivery verification remain separate prerequisites.
-
-References: [Workers Static Assets](https://developers.cloudflare.com/workers/static-assets/), [Workers custom domains](https://developers.cloudflare.com/workers/configuration/routing/custom-domains/).
-
-Platform guidance checked 12 October 2026: [Workers builds](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/) separates build/deploy/preview commands; [preview configuration](https://developers.cloudflare.com/workers/previews/configuration/) requires its block. [Static asset headers](https://developers.cloudflare.com/workers/static-assets/headers/) apply to asset responses. Keep explicit `--preview` for staging/branches. Dashboard/build logs were inspected; live domain responses were not rechecked.
-
-For local verification only (second terminal for the last command):
-
-```sh
-npm run build -- --preview
-npx --yes wrangler@4.149.0 deploy --dry-run --config wrangler.jsonc --outdir .qa/worker-dry-run
-npx --yes wrangler@4.149.0 dev --local --config wrangler.jsonc --port 4191 --persist-to .qa/worker-state
-node scripts/worker-qa.mjs
-```
-
-Stop Wrangler before rebuilding. It emulates static routing/headers locally and does not deploy. Ordinary `npm run build` remains the separately reviewed production build.
+Use Pages instructions below for the new business site. Do not run Wrangler deployment commands against the Pages source. The existing Worker build trigger must remain separated from Pages changes so pushes cannot replace the retained dev deployment. Restoring a Worker build requires an intentional review of its source configuration and explicit preview safeguards.
 
 ## Cloudflare Pages deployment
 
-### Interim deployment at dev.follent.net
+### Follent Pages staging
 
 Use **Pages** Git integration. A screen describing a “Worker project” with `npx wrangler deploy` and `npx wrangler preview` is the Workers flow. Return to **Workers & Pages → Create application → Pages → Connect to Git**. If offered, use the “Looking to deploy Pages?” entry point. The Pages screen asks for a production branch and build output directory; no Wrangler deploy/preview command is needed.
 
@@ -186,15 +169,15 @@ Use **Pages** Git integration. A screen describing a “Worker project” with `
 
 3. Select **Save and Deploy** and check the build log. Explicit `--preview` forces staging safeguards even on main: disabled forms, analytics and Formtrack; HTML/header noindex directives; and blocked crawling. Cloudflare calls main “production”, but this is an interim review build. Noindex is not access control.
 4. Test the assigned `https://<actual-project-name>.pages.dev` address, all main pages, `/privacy-policy/`, mobile navigation and the disabled Contact form. Check `build-info.json` reports `preview: true`, `formEnabled: false`, `analyticsEnabled: false`; verify deployed `X-Robots-Tag` and `robots.txt`.
-5. Open **Custom domains → Set up a domain**, add `dev.follent.net`, and follow activation instructions **before** adding DNS manually. Cloudflare-managed DNS can create the CNAME after confirmation; otherwise add `CNAME dev → <actual-project-name>.pages.dev` at your current DNS provider. A subdomain does not require moving nameservers. Preserve existing apex, www and mail records.
-6. Wait for domain/certificate activation and check `https://dev.follent.net/`. Keep `config.domain` as `https://follent.net`, the final canonical origin. Configure access protection separately if private review is required.
+5. For this launch, retain dev.follent.net on the existing Worker. Review Pages on its assigned pages.dev hostname; do not register dev with Pages.
+6. Keep config.domain as https://follent.net, the final canonical origin. Connect apex/www only after the launch gates below pass. The WordPress archive remains on Flywheel at https://archive.follent.net/.
 7. Connected pushes trigger builds; verify the actual deployed commit. Deploy `dist` generated with the chosen preview/production command, never `.qa/privacy-review` (a separate policy review fixture).
 
 ### Reviewed cutover to follent.net
 
 After migration and launch review, reuse this Pages project. Change the build command to **`npm run build`**, redeploy and verify approved production output before routing the apex. Removing `--preview` removes forced staging safeguards on main; enquiries still require separate privacy/configuration activation. Add apex and www through Pages, preserve mail records, verify SSL and approved redirects, and retain old hosting for rollback. The apex requires Cloudflare nameservers, so review the whole DNS zone before a nameserver migration. Build-setting changes require a new deployment.
 
-If dev and apex both remain attached to the production deployment, they serve the same main build. For independent staging afterward, move dev to a preview branch using Cloudflare's [custom branch alias instructions](https://developers.cloudflare.com/pages/how-to/custom-branch-aliases/), or use a separate project retaining the explicit preview command. Automatic safeguards apply only when `CF_PAGES=1` and `CF_PAGES_BRANCH` is not `main`; Workers or other CI must explicitly use `--preview` for staging/branch builds.
+For this launch dev remains on its existing Worker; Pages branch previews provide staging. See Cloudflare's [custom branch alias instructions](https://developers.cloudflare.com/pages/how-to/custom-branch-aliases/) only if a separate later domain change is approved. Automatic safeguards apply only when `CF_PAGES=1` and `CF_PAGES_BRANCH` is not `main`; Workers or other CI must explicitly use `--preview` for staging/branch builds.
 
 ### Standard production settings
 
@@ -220,3 +203,5 @@ See [QA_REPORT.md](QA_REPORT.md) for measured checks and remaining launch limita
 
 
 Preview containment evidence (12 October 2026): both base and existing-branch Workers builds use explicit --preview. The unsafe historical custom hostname is blocked by an owner-approved exact-host WAF rule; its workers.dev alternate is denied by the separately approved Preview URLs switch disablement. Production Worker URL remains enabled and the safe custom-domain preview remains available. Keep preview_urls false and previews_enabled true for the reviewed dev custom domain; retain the WAF containment until old-version retirement is independently confirmed. See [Workers evidence](docs/architecture/WORKERS.md) for observed responses and the historical failure sequence. This does not approve production cutover.
+
+Launch performance correction (22 October 2026): the consent bootstrap reserves its in-flow prompt before first paint, and navigation enhancement runs immediately after header markup, before main content. No-JavaScript navigation and analytics opt-in remain intact. This prevents late header/prompt changes from shifting Contact content on mobile.

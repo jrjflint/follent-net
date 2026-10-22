@@ -58,7 +58,7 @@ Review targets and loops. Do not redirect unrelated deleted URLs to the homepage
 
 ## 6. Build, QA and launch
 
-Follent currently uses Workers Static Assets; follow [the current Workers instructions](README.md#cloudflare-workers-deployment-current-follent-setup) for that deployment. The following Pages procedure is an alternative for client projects using Pages. Both serve the same generated static site; do not mix their domain registration or deployment settings.
+Follent is migrating its business site to Pages under the owner-authorised 22 October 2026 plan. Its existing dev Worker remains available; [historical Workers instructions](README.md#cloudflare-workers-deployment-current-follent-setup) are retained separately. Pages is the default for client projects. Do not mix platform domain/build settings.
 
 Follow [README's Cloudflare Pages instructions](README.md#cloudflare-pages-deployment). Choose **Pages → Connect to Git**, rather than the Workers screen with Wrangler commands. For an interim domain use main, framework None, `npm run build -- --preview`, output `dist`, repository root and `NODE_VERSION=22`. Register the subdomain through Pages before adding its CNAME; preserve existing-site and mail DNS. The explicit preview flag disables enquiries/analytics and indexing on main. After launch review, switch to `npm run build`, redeploy and connect the final domain. Keep independent staging on a preview branch or separate project afterward.
 
@@ -73,7 +73,7 @@ npm run check:launch
 npm run preview
 ```
 
-Review real phones and desktop browsers, keyboard navigation, form delivery, spelling, GST amounts and every CTA. Run Lighthouse and accessibility checks on the final configured site; changing fonts, photos or scripts can change results. Use [LAUNCH_CHECKLIST.md](LAUNCH_CHECKLIST.md) and the selected hosting procedure. Pages is the default for new client projects; Workers is the recorded Follent setup. Connect the approved domain manually only after launch authorisation, and monitor enquiries/search indexing.
+Review real phones and desktop browsers, keyboard navigation, form delivery, spelling, GST amounts and every CTA. Run Lighthouse and accessibility checks on the final configured site; changing fonts, photos or scripts can change results. Use [LAUNCH_CHECKLIST.md](LAUNCH_CHECKLIST.md) and the selected hosting procedure. Pages is the default for new client projects and the authorised Follent launch target; the existing Follent dev Worker is retained. Connect the approved domain manually only after launch authorisation, and monitor enquiries/search indexing.
 
 Custom `--config` builds record their config path/hash in build-info. `node scripts/check.mjs --dir .qa/your-build --launch` checks that recorded config, not Follent's default. Rebuild after config changes. Explicit `--config` must match provenance; legacy output needs explicit config. Never set review flags merely to pass these checks.
 

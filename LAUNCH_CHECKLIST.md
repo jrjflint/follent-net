@@ -18,11 +18,11 @@
 
 ## Domain cutover — manual, after migration review
 
-- [ ] Confirm hosting type and actual account settings. Follent is recorded as Workers Static Assets; Pages is the default for new client projects. Follow the matching README procedure, not both. Verify deployed commit, preview state, headers and custom 404s.
+- [ ] Confirm hosting type and actual account settings. Follent Stage 2 is authorised for Pages; preserve its existing dev Worker. WordPress Stage 1 is accepted on archive.follent.net. Follow the matching README procedure, not both. Verify deployed commit, preview state, headers and custom 404s.
 - [ ] For interim staging use `npm run build -- --preview`, `dist` and Node 22; verify noindex headers/HTML, blocked crawling and disabled forms/analytics. Never deploy `.qa/privacy-review`.
 - [ ] Workers only: verify `wrangler.jsonc`, separate production/Previews Base build commands and Worker custom domains. Both staging builds require `--preview`; preserve the owner-approved correction in [Workers evidence](docs/architecture/WORKERS.md). Do not add a Pages CNAME; verify deployed routing/headers after an authorised deployment.
 - [ ] Pages only: use Git integration, framework None, main, `dist`; register its custom domain through Pages before following its DNS instructions. Automatic non-main safeguards apply only with Pages environment variables; Workers staging requires explicit `--preview`.
-- [ ] At approved cutover, remove `--preview`, redeploy and inspect production output before routing the apex. Decide whether dev should move to a preview branch or separate staging project.
+- [ ] At approved cutover, remove `--preview`, redeploy and inspect production output before routing the apex. Keep dev.follent.net on its existing Worker; use Pages branch previews for staging.
 - [ ] Test a branch preview; ensure noindex and disabled enquiries/analytics.
 - [ ] Preserve DNS email records; add custom domains through the chosen platform and verify SSL. No nameserver/domain changes are implied by repository pushes.
 - [ ] Configure www-to-apex and HTTP-to-HTTPS handling; verify no loops and preserved paths.
@@ -38,4 +38,4 @@
 - [ ] Recheck performance on the production domain and a real mobile connection.
 - [ ] Confirm analytics consent and conversion events if enabled.
 - [ ] Review form quota, spam false positives, provider alerts and notification delivery regularly.
-- [ ] Retire the old site only after reviewed cutover acceptance; retain backups securely.
+- [ ] After Pages acceptance, remove only apex/www Flywheel aliases; retain archive hosting and backups. Hosting cancellation and archive retirement are excluded.

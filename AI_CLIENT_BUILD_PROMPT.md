@@ -38,3 +38,5 @@ Customise this static website reference template for the client below. Inspect t
 Deliver the customised source, generated preview, changed configuration summary, test evidence and outstanding human decisions. The client must approve factual copy, design, privacy and migration before launch.
 
 Follow CLIENT_SETUP for the policy entry/client scaffold and README for commands/hosting. Replace business-specific policy facts and review actual output, not just configuration. Keep the client policy selection and replace its scaffold before asking the owner to approve collection. Consult `docs/architecture/REVIEW.md` for dated findings and `TASKS.md` for current completion status.
+
+Follent launch exception (22 October 2026): the owner authorised migration to Pages. Preserve the existing dev Worker and the accepted Flywheel archive. Follow migration/STAGE2_REPORT.md for current execution state rather than treating historical Workers evidence as the new launch target.
