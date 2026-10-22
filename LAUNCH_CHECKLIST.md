@@ -1,5 +1,7 @@
 # Launch checklist
 
+Current Follent execution: apex/www were connected to Pages on 22 October 2026. See [Stage 2 report](migration/STAGE2_REPORT.md) for dated evidence, final acceptance and follow-up checks. The individual checks below remain a reusable checklist.
+
 ## Before deployment
 
 - [ ] Approve page count, package scope, prices in AUD ex GST, recurring services and third-party fees.
